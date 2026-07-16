@@ -60,7 +60,7 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
 
   if (success) {
     return (
-      <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-xl text-center font-bold">
+      <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-center font-bold">
         Request Sent Successfully! We will contact you soon.
       </div>
     );
@@ -69,7 +69,7 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <div>
-        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">
+        <label className="text-xs font-bold text-white/60 uppercase tracking-wider mb-1 block">
           Full Name
         </label>
         <input
@@ -77,14 +77,14 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
           type="text"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          className="w-full bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all"
           placeholder="John Doe"
         />
-        {errors.name && <p className="text-red-500 text-xs font-bold mt-1">{errors.name}</p>}
+        {errors.name && <p className="text-red-400 text-xs font-bold mt-1">{errors.name}</p>}
       </div>
 
       <div>
-        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">
+        <label className="text-xs font-bold text-white/60 uppercase tracking-wider mb-1 block">
           Phone Number
         </label>
         <input
@@ -92,26 +92,26 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
           type="tel"
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          className="w-full bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all"
           placeholder="9876543210"
           maxLength={10}
         />
-        {errors.phone && <p className="text-red-500 text-xs font-bold mt-1">{errors.phone}</p>}
+        {errors.phone && <p className="text-red-400 text-xs font-bold mt-1">{errors.phone}</p>}
       </div>
 
       <div>
-        <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 block">
+        <label className="text-xs font-bold text-white/60 uppercase tracking-wider mb-1 block">
           Service Needed
         </label>
         <select
           required
           value={formData.service}
           onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-700"
+          className="w-full bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all"
         >
-          <option value="">Select a service...</option>
+          <option value="" className="bg-slate-900">Select a service...</option>
           {services.map((s) => (
-            <option key={s.id} value={s.name}>
+            <option key={s.id} value={s.name} className="bg-slate-900">
               {s.name}
             </option>
           ))}
@@ -119,13 +119,13 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
       </div>
 
       {errors.submit && (
-        <p className="text-red-500 text-xs font-bold text-center">{errors.submit}</p>
+        <p className="text-red-400 text-xs font-bold text-center">{errors.submit}</p>
       )}
 
       <button
         type="submit"
         disabled={isSending}
-        className="mt-4 w-full bg-blue-800 hover:bg-blue-900 disabled:bg-blue-800/50 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98] flex justify-center items-center"
+        className="mt-4 w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98] flex justify-center items-center"
       >
         {isSending ? "Sending..." : "Submit Request"}
       </button>

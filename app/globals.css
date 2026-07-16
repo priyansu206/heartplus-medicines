@@ -67,6 +67,30 @@
     transform: translateZ(0) rotate(360deg);
     }
   }
+  @keyframes fadeSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes gradientFlow {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+}
+
+.site-bg {
+  background: linear-gradient(135deg, #06060f 0%, #0a0a1a 25%, #0d1025 50%, #080818 75%, #06060f 100%);
+  background-size: 400% 400%;
+  animation: gradientFlow 20s ease infinite;
 }
 
 :root {
