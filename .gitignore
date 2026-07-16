@@ -9,3 +9,4 @@ build/
 # local env files
 .env*.local
 .env
+memory.md
