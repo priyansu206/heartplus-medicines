@@ -43,29 +43,12 @@ export function DevToolsProtection() {
       e.preventDefault();
     };
 
-    // Detect dev tools opening via debugger statement timing
-    let devToolsOpen = false;
-    const detectDevTools = () => {
-      const threshold = 160;
-      const start = performance.now();
-      debugger;
-      const end = performance.now();
-      if (end - start > threshold) {
-        devToolsOpen = true;
-      }
-    };
-
-    // Run detection periodically (low frequency to minimize perf impact)
-    const detectInterval = setInterval(detectDevTools, 3000);
-
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("contextmenu", handleContextMenu);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("contextmenu", handleContextMenu);
-      clearInterval(detectInterval);
-      void devToolsOpen; // suppress unused warning
     };
   }, []);
 

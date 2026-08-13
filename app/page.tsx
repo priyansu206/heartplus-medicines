@@ -24,11 +24,13 @@ const services = [
 function MouseGlow() {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    let animationFrameId: number;
+    let animationFrameId: number | null = null;
     const handleMove = (e: MouseEvent | TouchEvent) => {
+      if (animationFrameId !== null) return;
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
       animationFrameId = requestAnimationFrame(() => {
+        animationFrameId = null;
         if (ref.current) {
           ref.current.style.background = `radial-gradient(600px circle at ${clientX}px ${clientY}px, rgba(59, 130, 246, 0.08), transparent 80%)`;
         }
@@ -39,7 +41,7 @@ function MouseGlow() {
     return () => {
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("touchmove", handleMove);
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
     };
   }, []);
   return (

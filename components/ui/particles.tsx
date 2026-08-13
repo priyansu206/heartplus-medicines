@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useEffect, useRef, type ComponentPropsWithoutRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, type ComponentPropsWithoutRef } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -58,7 +58,8 @@ export const Particles: React.FC<ParticlesProps> = ({
   const resizeTimeout = useRef<NodeJS.Timeout | null>(null)
 
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
-  const rgb = hexToRgb(color)
+  const rgb = useMemo(() => hexToRgb(color), [color])
+  const rgbaPrefix = useMemo(() => `rgba(${rgb.join(", ")}, `, [rgb])
 
   const run = useCallback(() => {
     const canvas = canvasRef.current
@@ -81,16 +82,15 @@ export const Particles: React.FC<ParticlesProps> = ({
 
     const drawCircle = (circle: Circle, update = false) => {
       const { x, y, translateX, translateY, size: s, alpha } = circle
-      ctx.translate(translateX, translateY)
       ctx.beginPath()
-      ctx.arc(x, y, s, 0, 2 * Math.PI)
-      ctx.fillStyle = `rgba(${rgb.join(", ")}, ${alpha})`
+      ctx.arc(x + translateX, y + translateY, s, 0, 2 * Math.PI)
+      ctx.fillStyle = rgbaPrefix + alpha + ")"
       ctx.fill()
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       if (!update) circles.current.push(circle)
     }
 
     const clearContext = () => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, canvasSize.current.w, canvasSize.current.h)
     }
 
@@ -101,7 +101,6 @@ export const Particles: React.FC<ParticlesProps> = ({
       canvas.height = canvasSize.current.h * dpr
       canvas.style.width = `${canvasSize.current.w}px`
       canvas.style.height = `${canvasSize.current.h}px`
-      ctx.scale(dpr, dpr)
       circles.current = []
       for (let i = 0; i < quantity; i++) {
         const circle = circleParams()
@@ -112,14 +111,13 @@ export const Particles: React.FC<ParticlesProps> = ({
     const animate = () => {
       clearContext()
       circles.current.forEach((circle: Circle, i: number) => {
-        const edge = [
+        const closestEdge = Math.min(
           circle.x + circle.translateX - circle.size,
           canvasSize.current.w - circle.x - circle.translateX - circle.size,
           circle.y + circle.translateY - circle.size,
-          canvasSize.current.h - circle.y - circle.translateY - circle.size,
-        ]
-        const closestEdge = edge.reduce((a, b) => Math.min(a, b))
-        const remapClosestEdge = parseFloat(remapValue(closestEdge, 0, 20, 0, 1).toFixed(2))
+          canvasSize.current.h - circle.y - circle.translateY - circle.size
+        )
+        const remapClosestEdge = remapValue(closestEdge, 0, 20, 0, 1)
         if (remapClosestEdge > 1) {
           circle.alpha = Math.min(circle.alpha + 0.02, circle.targetAlpha)
         } else {
@@ -173,7 +171,7 @@ export const Particles: React.FC<ParticlesProps> = ({
       window.removeEventListener("resize", handleResize)
       window.removeEventListener("mousemove", handleMouseMove)
     }
-  }, [quantity, staticity, ease, size, vx, vy, dpr, rgb])
+  }, [quantity, staticity, ease, size, vx, vy, dpr, rgbaPrefix])
 
   useEffect(() => {
     const cleanup = run()
