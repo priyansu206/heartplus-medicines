@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     google: "7xbrrhDs5NYV-wPTjfbofv0fQtosFa4WU6rwnU7Cgrc",
   },
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,7 +46,37 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        
+        {/* Medical Clinic JSON-LD Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "MedicalClinic",
+              name: "Heart Plus Medicines & Poly Clinic",
+              url: "https://heartplus-medicines-henna.vercel.app/",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Durgapur",
+                addressRegion: "West Bengal",
+                addressCountry: "IN"
+              },
+              medicalSpecialty: [
+                "Cardiology",
+                "Neurology",
+                "Pediatrics",
+                "Nephrology",
+                "Urology",
+                "Gastroenterology",
+                "GeneralMedicine"
+              ]
+            }),
+          }}
+        />
+      </body>
     </html>
   );
 }
