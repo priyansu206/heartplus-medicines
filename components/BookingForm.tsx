@@ -60,7 +60,11 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
 
   if (success) {
     return (
-      <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-center font-bold">
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-center font-bold"
+      >
         Request Sent Successfully! We will contact you soon.
       </div>
     );
@@ -77,7 +81,12 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
           type="text"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all"
+          aria-invalid={!!errors.name}
+          className={`w-full bg-white/[0.06] border rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 transition-all ${
+            errors.name
+              ? "border-red-500/60 focus:ring-red-500/50 focus:border-red-500/60"
+              : "border-white/[0.1] focus:ring-blue-500/50 focus:border-blue-500/30"
+          }`}
           placeholder="John Doe"
         />
         {errors.name && <p className="text-red-400 text-xs font-bold mt-1">{errors.name}</p>}
@@ -92,7 +101,12 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
           type="tel"
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          className="w-full bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all"
+          aria-invalid={!!errors.phone}
+          className={`w-full bg-white/[0.06] border rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 transition-all ${
+            errors.phone
+              ? "border-red-500/60 focus:ring-red-500/50 focus:border-red-500/60"
+              : "border-white/[0.1] focus:ring-blue-500/50 focus:border-blue-500/30"
+          }`}
           placeholder="9876543210"
           maxLength={10}
         />

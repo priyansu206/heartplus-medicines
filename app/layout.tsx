@@ -8,7 +8,11 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Heart Plus Medicines & Poly Clinic",
+  metadataBase: new URL("https://heartplus-medicines-henna.vercel.app/"),
+  title: {
+    default: "Heart Plus Medicines & Poly Clinic",
+    template: "%s | Heart Plus Medicines & Poly Clinic",
+  },
   description:
     "Comprehensive healthcare services in Durgapur — General Medicines, Cardiology, Neurology, Pediatrics, and more. Book your appointment today.",
   keywords: [
@@ -44,9 +48,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} h-full antialiased scroll-smooth overflow-x-clip`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col overflow-x-clip">
+        <div aria-hidden="true" className="site-bg-anim" />
         {children}
         
         <script

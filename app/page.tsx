@@ -6,7 +6,8 @@ import { BookingForm } from "@/components/BookingForm";
 import { DevToolsProtection } from "@/components/DevToolsProtection";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Particles } from "@/components/ui/particles";
-import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
+import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 const services = [
@@ -20,6 +21,26 @@ const services = [
   { id: 8, name: "Pulmonary Medicine", desc: "Expert treatment for lung and respiratory system conditions, including asthma and COPD." },
   { id: 9, name: "Blood Sample Collection", desc: "Quick, hygienic, and accurate blood sample collection for diagnostic testing." },
 ];
+
+// Services grid reveal — a staggered cascade where each card rises into
+// place and un-blurs from a soft haze into sharp focus.
+const servicesGridVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+  },
+};
+
+const serviceCardVariants: Variants = {
+  hidden: { opacity: 0, y: 32, scale: 0.96, filter: "blur(8px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+  },
+};
 
 function MouseGlow() {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,10 +58,8 @@ function MouseGlow() {
       });
     };
     window.addEventListener("mousemove", handleMove);
-    window.addEventListener("touchmove", handleMove);
     return () => {
       window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("touchmove", handleMove);
       if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -53,18 +72,14 @@ function MouseGlow() {
   );
 }
 
-function ServiceListItem({ service, index, onBookClick }: { service: { id: number; name: string; desc: string }; index: number; onBookClick: () => void }) {
+function ServiceListItem({ service, onBookClick }: { service: { id: number; name: string; desc: string }; onBookClick: () => void }) {
   const isGeneral = service.id === 1;
-  const delay = index * 0.07;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.97 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ y: -6, transition: { duration: 0.25 } }}
-      className="group flex flex-col p-6 rounded-3xl relative overflow-hidden bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_48px_rgba(59,130,246,0.12)] hover:bg-white/[0.07] hover:border-blue-400/20 transition-all duration-300"
+      variants={serviceCardVariants}
+      whileHover={{ y: -6, transition: { type: "spring", stiffness: 400, damping: 25 } }}
+      className="group flex flex-col p-6 rounded-3xl relative overflow-hidden bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_48px_rgba(59,130,246,0.12)] hover:bg-white/[0.07] hover:border-blue-400/20 transition-all duration-300 transform-gpu"
     >
       {/* Hover glow */}
       <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/[0.06] group-hover:to-purple-500/[0.04] transition-all duration-500 pointer-events-none" />
@@ -91,7 +106,7 @@ function ServiceListItem({ service, index, onBookClick }: { service: { id: numbe
         {!isGeneral ? (
           <button
             onClick={onBookClick}
-            className="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-500 backdrop-blur-md text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(37,99,235,0.4)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.5)] hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 flex items-center justify-center gap-2 group/btn text-sm"
+            className="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-500 backdrop-blur-md text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(37,99,235,0.4)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.5)] hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 transform-gpu flex items-center justify-center gap-2 group/btn text-sm"
           >
             Book Now
             <span className="inline-block transition-transform duration-200 group-hover/btn:translate-x-1">&rarr;</span>
@@ -116,9 +131,6 @@ export default function Home() {
       {/* Fullscreen Hero */}
       <HeroSection onBookClick={() => setIsModalOpen(true)} />
 
-      {/* Reviews — right below the hero */}
-      <ReviewsSection />
-
       {/* Decorative layers for the content sections */}
       <div className="relative">
         <Particles className="absolute inset-0 z-0 opacity-40" quantity={50} ease={70} color="#3b82f6" refresh />
@@ -130,12 +142,14 @@ export default function Home() {
           {isModalOpen && (
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
               onClick={() => setIsModalOpen(false)}
             >
               <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 w-full max-w-lg shadow-2xl border border-white/10 relative"
+                initial={{ scale: 0.94, opacity: 0, y: 24 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.94, opacity: 0, y: 24 }}
+                transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 w-full max-w-lg shadow-2xl border border-white/10 relative transform-gpu"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
@@ -153,6 +167,9 @@ export default function Home() {
         </AnimatePresence>
 
         <div className="relative z-10">
+          {/* Reviews */}
+          <ReviewsSection />
+
           {/* Services Section */}
           <section id="services" className="py-24 relative z-10">
             <div className="max-w-6xl mx-auto px-6">
@@ -160,23 +177,32 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="text-center mb-16 relative"
               >
                 <span className="bg-white/[0.06] backdrop-blur-md text-blue-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">Our Services</span>
               </motion.div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {services.map((service, idx) => (
-                  <ServiceListItem key={service.id} service={service} index={idx} onBookClick={() => setIsModalOpen(true)} />
+              <motion.div
+                variants={servicesGridVariants}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.15 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {services.map((service) => (
+                  <ServiceListItem key={service.id} service={service} onBookClick={() => setIsModalOpen(true)} />
                 ))}
-              </div>
+              </motion.div>
             </div>
           </section>
 
           {/* Footer */}
           <footer id="reach-us" className="bg-black/40 text-white/40 py-16 text-center md:text-left rounded-t-[3rem] mt-12 relative z-10 border-t border-white/[0.06]">
             <div className="max-w-6xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
-              <div className="flex flex-col items-center md:items-start"><p className="text-2xl text-white font-extrabold mb-2">Heart Plus</p><p className="text-sm font-medium">Care you can believe in.</p></div>
+              <div className="flex flex-col items-center md:items-start">
+                <Link href="/" className="text-2xl text-white font-extrabold mb-2 hover:text-blue-300 transition-colors">Heart Plus</Link>
+                <p className="text-sm font-medium">Care you can believe in.</p>
+              </div>
               <div className="flex flex-col items-center md:items-start gap-4 text-sm font-medium"><p className="flex items-center gap-2 hover:text-white transition cursor-default"><span className="text-lg">&#128205;</span> Durgapur Chowk, Jobra</p><a href="mailto:HPmedicines@gmail.com" className="flex items-center gap-2 hover:text-white transition"><span className="text-lg">&#9993;&#65039;</span> HPmedicines@gmail.com</a></div>
               <div className="flex flex-col items-center md:items-end gap-4 text-sm font-medium"><a href="tel:8400661188" className="flex items-center gap-2 hover:text-white transition"><span className="text-lg">&#128222;</span> Clinic: 8400661188</a><a href="tel:7008512435" className="flex items-center gap-2 hover:text-white transition"><span className="text-lg">&#128241;</span> Personal: 7008512435</a></div>
             </div>

@@ -55,9 +55,16 @@ export const Particles: React.FC<ParticlesProps> = ({
   const mouse = useRef({ x: 0, y: 0 })
   const canvasSize = useRef({ w: 0, h: 0 })
   const rafID = useRef<number | null>(null)
-  const resizeTimeout = useRef<NodeJS.Timeout | null>(null)
+  const resizeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Cached canvas position — avoids a forced layout read on every mousemove
+  const canvasRect = useRef({ left: 0, top: 0, width: 0, height: 0 })
+  const prefersReducedMotion = useRef(false)
 
-  const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
+  // Cap DPR at 2 — on high-DPI phones a 3x canvas paints 9x the pixels for no visible gain
+  const dpr =
+    typeof window !== "undefined"
+      ? Math.min(window.devicePixelRatio || 1, 2)
+      : 1
   const rgb = useMemo(() => hexToRgb(color), [color])
   const rgbaPrefix = useMemo(() => `rgba(${rgb.join(", ")}, `, [rgb])
 
@@ -101,6 +108,13 @@ export const Particles: React.FC<ParticlesProps> = ({
       canvas.height = canvasSize.current.h * dpr
       canvas.style.width = `${canvasSize.current.w}px`
       canvas.style.height = `${canvasSize.current.h}px`
+      const rect = container.getBoundingClientRect()
+      canvasRect.current = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+      }
       circles.current = []
       for (let i = 0; i < quantity; i++) {
         const circle = circleParams()
@@ -141,9 +155,6 @@ export const Particles: React.FC<ParticlesProps> = ({
       rafID.current = window.requestAnimationFrame(animate)
     }
 
-    initCanvas()
-    animate()
-
     const handleResize = () => {
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current)
       resizeTimeout.current = setTimeout(initCanvas, 200)
@@ -152,18 +163,29 @@ export const Particles: React.FC<ParticlesProps> = ({
     const handleMouseMove = (event: MouseEvent) => {
       rawMouse.current.x = event.clientX
       rawMouse.current.y = event.clientY
-      const rect = canvas.getBoundingClientRect()
-      const { w, h } = canvasSize.current
-      const x = rawMouse.current.x - rect.left - w / 2
-      const y = rawMouse.current.y - rect.top - h / 2
+      const { left, top, width: w, height: h } = canvasRect.current
+      const x = rawMouse.current.x - left - w / 2
+      const y = rawMouse.current.y - top - h / 2
       if (x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2) {
         mouse.current.x = x
         mouse.current.y = y
       }
     }
 
+    initCanvas()
+
     window.addEventListener("resize", handleResize)
+
+    // Respect prefers-reduced-motion: draw the scene once, skip the animation loop
+    if (prefersReducedMotion.current) {
+      return () => {
+        if (resizeTimeout.current) clearTimeout(resizeTimeout.current)
+        window.removeEventListener("resize", handleResize)
+      }
+    }
+
     window.addEventListener("mousemove", handleMouseMove)
+    animate()
 
     return () => {
       if (rafID.current != null) window.cancelAnimationFrame(rafID.current)
@@ -174,6 +196,9 @@ export const Particles: React.FC<ParticlesProps> = ({
   }, [quantity, staticity, ease, size, vx, vy, dpr, rgbaPrefix])
 
   useEffect(() => {
+    prefersReducedMotion.current = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
     const cleanup = run()
     return () => { cleanup?.() }
   }, [run])

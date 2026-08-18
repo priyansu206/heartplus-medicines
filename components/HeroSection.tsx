@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, ArrowRight, Phone } from "lucide-react";
 
 interface HeroSectionProps {
@@ -10,8 +12,19 @@ interface HeroSectionProps {
 export default function HeroSection({ onBookClick }: HeroSectionProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Lock background scroll while the mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      const original = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = original;
+      };
+    }
+  }, [mobileMenuOpen]);
+
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-black">
+    <div id="home" className="relative h-screen w-full overflow-hidden bg-black">
       {/* Video Background */}
       <video
         autoPlay
@@ -32,18 +45,20 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
 
       {/* Navbar */}
       <nav className="relative z-30 flex items-center justify-between px-6 py-5 md:px-12 lg:px-16">
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Heart Plus — Go to homepage">
           <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden border border-white/20 shrink-0">
-            <img
+            <Image
               src="/logo.jpg"
               alt="Heart Plus Logo"
+              width={40}
+              height={40}
               className="w-full h-full object-cover"
             />
           </div>
           <span className="text-lg font-semibold tracking-tight text-white sm:text-xl">
             Heart Plus
           </span>
-        </div>
+        </Link>
 
         <div className="hidden md:flex items-center gap-6">
           {["Home", "Services", "Reviews", "Reach Us"].map((item) => (
@@ -59,21 +74,23 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
 
         <button
           onClick={onBookClick}
-          className="hidden md:block rounded-lg bg-white px-5 py-2 text-sm font-medium text-black hover:scale-105 transition-transform"
+          className="hidden md:block rounded-lg bg-white px-5 py-2 text-sm font-medium text-black hover:scale-105 transition-transform transform-gpu"
         >
           Book Now
         </button>
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden relative z-50 flex h-10 w-10 items-center justify-center active:scale-90"
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
+          className="md:hidden relative z-50 flex h-11 w-11 items-center justify-center active:scale-90 transition-transform transform-gpu"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           <Menu
-            className={`absolute transition-all duration-300 text-white ${mobileMenuOpen ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"}`}
+            className={`absolute transition-all duration-300 text-white transform-gpu ${mobileMenuOpen ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"}`}
           />
           <X
-            className={`absolute transition-all duration-300 text-white ${mobileMenuOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`}
+            className={`absolute transition-all duration-300 text-white transform-gpu ${mobileMenuOpen ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`}
           />
         </button>
       </nav>
@@ -98,16 +115,15 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
             >
               {item}
             </a>
-          ))}
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onBookClick();
-            }}
-            className="mt-6 rounded-full bg-white px-8 py-3.5 text-base font-medium text-black hover:scale-105 transition-transform max-w-max"
-          >
-            Book Appointment
-          </button>
+          ))}            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onBookClick();
+              }}
+              className="mt-6 rounded-full bg-white px-8 py-3.5 text-base font-medium text-black hover:scale-105 transition-transform transform-gpu max-w-max"
+            >
+              Book Appointment
+            </button>
         </div>
       </div>
 
@@ -150,7 +166,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 animate-[fadeSlideUp_0.8s_ease_0.9s_both]">
             <button
               onClick={onBookClick}
-              className="rounded-lg bg-white px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-medium text-black hover:scale-105 transition-transform inline-flex items-center gap-2"
+              className="rounded-lg bg-white px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-medium text-black hover:scale-105 transition-transform transform-gpu inline-flex items-center gap-2"
             >
               Book Appointment
               <ArrowRight size={16} />

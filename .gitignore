@@ -6,6 +6,9 @@
 /out/
 build/
 
+# typescript build cache
+tsconfig.tsbuildinfo
+
 # local env files
 .env*.local
 .env

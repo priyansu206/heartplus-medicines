@@ -26,7 +26,7 @@ async function verifySession(secret: string, token: string): Promise<boolean> {
   return signature === expected;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect /admin/dashboard and other admin sub-routes, but NOT /admin/login
