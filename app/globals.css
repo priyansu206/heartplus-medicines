@@ -112,6 +112,12 @@ html {
   }
 }
 
+/* Reviews section dark gradient background */
+.reviews-bg {
+  background: linear-gradient(to bottom, #06060f 0%, #0a0a1a 50%, #0d1025 100%);
+  min-height: 100vh;
+}
+
 :root {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -187,13 +193,10 @@ html {
   }
   body {
     @apply text-foreground;
-    /* Transparent so the fixed .site-bg-anim layer shows through as the page
-       background. An opaque body background would paint over negative-z-index
-       layers, leaving transparent dark sections looking white. */
     background-color: transparent;
-    isolation: isolate;
   }
   html {
     @apply font-sans;
+    background-color: #06060f !important;
   }
 }

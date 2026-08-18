@@ -73,7 +73,7 @@ const reviewCardVariants: Variants = {
 
 export default function ReviewSection() {
   return (
-    <section className="py-24 relative bg-gradient-to-b from-[#06060f] via-[#0a0a1a] to-[#0d1025]" id="reviews">
+    <section className="py-24 relative reviews-bg" id="reviews">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div

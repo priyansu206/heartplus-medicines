@@ -1,13 +1,13 @@
 "use client";
 
-import HeroSection from "@/components/HeroSection";
-import ReviewsSection from "@/components/ReviewsSection";
 import { BookingForm } from "@/components/BookingForm";
 import { DevToolsProtection } from "@/components/DevToolsProtection";
+import HeroSection from "@/components/HeroSection";
+import ReviewsSection from "@/components/ReviewsSection";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Particles } from "@/components/ui/particles";
-import Link from "next/link";
 import { AnimatePresence, motion, type Variants } from "motion/react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 const services = [
@@ -203,7 +203,7 @@ export default function Home() {
                 <Link href="/" className="text-2xl text-white font-extrabold mb-2 hover:text-blue-300 transition-colors">Heart Plus</Link>
                 <p className="text-sm font-medium">Care you can believe in.</p>
               </div>
-              <div className="flex flex-col items-center md:items-start gap-4 text-sm font-medium"><p className="flex items-center gap-2 hover:text-white transition cursor-default"><span className="text-lg">&#128205;</span> Durgapur Chowk, Jobra</p><a href="mailto:HPmedicines@gmail.com" className="flex items-center gap-2 hover:text-white transition"><span className="text-lg">&#9993;&#65039;</span> HPmedicines@gmail.com</a></div>
+              <div className="flex flex-col items-center md:items-start gap-4 text-sm font-medium"><p className="flex items-center gap-2 hover:text-white transition cursor-default"><span className="text-lg">&#128205;</span> Durgapur Chowk,near by durgamandap, Jobra</p><a href="mailto:HPmedicines@gmail.com" className="flex items-center gap-2 hover:text-white transition"><span className="text-lg">&#9993;&#65039;</span> heartplusmedicines@gmail.com</a></div>
               <div className="flex flex-col items-center md:items-end gap-4 text-sm font-medium"><a href="tel:8400661188" className="flex items-center gap-2 hover:text-white transition"><span className="text-lg">&#128222;</span> Clinic: 8400661188</a><a href="tel:7008512435" className="flex items-center gap-2 hover:text-white transition"><span className="text-lg">&#128241;</span> Personal: 7008512435</a></div>
             </div>
             <div className="mt-16 pt-8 border-t border-white/[0.06] text-sm text-center font-medium">&copy; {new Date().getFullYear()} Heart Plus Medicines & Poly Clinic. All rights reserved.</div>
