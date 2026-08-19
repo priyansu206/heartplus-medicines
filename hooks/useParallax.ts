@@ -15,8 +15,6 @@ interface ParallaxOptions {
   start?: string;
   /** ScrollTrigger end position */
   end?: string;
-  /** Whether the element is pinned */
-  pin?: boolean;
   /** Element to scrub against — defaults to window scroller */
   scrub?: boolean | number;
 }

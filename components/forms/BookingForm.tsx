@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import type { Service } from "@/lib/constants";
 
 interface BookingFormProps {
-  services: readonly { id: number; name: string; desc: string }[];
+  services: readonly Service[];
   onSuccess: () => void;
 }
 

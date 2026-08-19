@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, type Variants } from "motion/react";
 import { Star } from "lucide-react";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 
@@ -24,7 +23,7 @@ export const googleReviews: Review[] = [
     name: "SUJIT KUMAR NAYAK",
     date: "2 weeks ago",
     rating: 5,
-    text: "Excellent Experience... Good Behaviour.... I am fully Satisfied 👌 👍",
+    text: "Excellent Experience... Good Behaviour.... I am fully Satisfied \ud83d\udc4c \ud83d\udc4d",
   },
   {
     name: "rabinarayan mohanty",
@@ -42,48 +41,29 @@ export const googleReviews: Review[] = [
     name: "Chaitanya Sukidas",
     date: "2 weeks ago",
     rating: 5,
-    text: "good staff behavior , good discount i mean 15% is still better than 10 % so yeah go for it 👌 👍",
+    text: "good staff behavior , good discount i mean 15% is still better than 10 % so yeah go for it \ud83d\udc4c \ud83d\udc4d",
   },
   {
     name: "Sidhanta kumar Dakua",
     date: "3 weeks ago",
     rating: 5,
-    text: "Cuttack's best clinic,and any time doctor available or friendly service do visit heartplus medicines. 🫶 👌 👍",
+    text: "Cuttack's best clinic,and any time doctor available or friendly service do visit heartplus medicines. \ud83e\ude76 \ud83d\udc4c \ud83d\udc4d",
   },
 ];
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-const reviewsGridVariants: Variants = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-};
-
-const reviewCardVariants: Variants = {
-  hidden: { opacity: 0, y: 32, scale: 0.96, filter: "blur(8px)" },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
-  },
-};
-
 export default function ReviewSection() {
   const headerRef = useScrollReveal({ y: 30, duration: 0.7 });
-  const gridRef = useStaggerReveal<HTMLDivElement>(".review-card", { y: 50, stagger: 0.1, duration: 0.7 });
+  const gridRef = useStaggerReveal<HTMLDivElement>(".review-card", {
+    y: 50,
+    stagger: 0.1,
+    duration: 0.7,
+  });
 
   return (
     <section className="py-24 relative reviews-bg" id="reviews">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div
-          ref={headerRef}
-          className="text-center max-w-2xl mx-auto mb-16"
-        >
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto mb-16">
           <span className="bg-white/[0.06] backdrop-blur-md text-rose-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
             Patient Feedback
           </span>
