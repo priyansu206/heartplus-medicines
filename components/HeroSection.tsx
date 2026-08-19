@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, ArrowRight, Phone } from "lucide-react";
+import { useParallax } from "@/hooks/useParallax";
 
 interface HeroSectionProps {
   onBookClick: () => void;
@@ -11,6 +12,11 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onBookClick }: HeroSectionProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Parallax refs
+  const videoRef = useParallax<HTMLDivElement>({ y: 120, start: "top top", end: "bottom top" });
+  const contentRef = useParallax<HTMLDivElement>({ y: -60, start: "top top", end: "bottom top" });
+  const glowRef = useParallax<HTMLDivElement>({ y: 40, start: "top top", end: "bottom top" });
 
   // Lock background scroll while the mobile menu is open
   useEffect(() => {
@@ -25,23 +31,25 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
 
   return (
     <div id="home" className="relative h-screen w-full overflow-hidden bg-black">
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: "70% center" }}
-      >
-        <source
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_204221_5339e40b-e73d-4ab0-9c65-79c18c66fd50.mp4"
-          type="video/mp4"
-        />
-      </video>
+      {/* Video Background — parallax: scrolls slower than page */}
+      <div ref={videoRef} className="absolute inset-0 h-[120%] -top-[10%]">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: "70% center" }}
+        >
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_204221_5339e40b-e73d-4ab0-9c65-79c18c66fd50.mp4"
+            type="video/mp4"
+          />
+        </video>
+      </div>
 
-      {/* Dark gradient overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+      {/* Dark gradient overlay — parallax: slight offset */}
+      <div ref={glowRef} className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
 
       {/* Navbar */}
       <nav className="relative z-30 flex items-center justify-between px-6 py-5 md:px-12 lg:px-16">
@@ -127,8 +135,8 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Hero Content */}
-      <div className="relative z-10 flex flex-col justify-between h-[calc(100vh-80px)] px-6 pb-10 pt-12 sm:pb-12 sm:pt-16 md:px-12 md:pb-16 md:pt-20 lg:px-16">
+      {/* Hero Content — parallax: scrolls slightly faster for depth */}
+      <div ref={contentRef} className="relative z-10 flex flex-col justify-between h-[calc(100vh-80px)] px-6 pb-10 pt-12 sm:pb-12 sm:pt-16 md:px-12 md:pb-16 md:pt-20 lg:px-16">
         {/* Top */}
         <div className="max-w-3xl">
           <div className="mb-3 sm:mb-4 animate-[fadeSlideUp_0.8s_ease_0.2s_both]">

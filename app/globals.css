@@ -82,6 +82,29 @@
 /* Solid fallback so nothing flashes white while fonts/layers load */
 html {
   background: #06060f;
+  scroll-behavior: auto !important; /* Lenis handles smooth scroll */
+}
+
+/* Lenis smooth scroll */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Prevent overscroll bounce on mobile */
+html.lenis, body.lenis {
+  overscroll-behavior: none;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 /* Dark-section marker. The animated gradient lives on a fixed GPU-composited

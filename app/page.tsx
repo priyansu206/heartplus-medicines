@@ -9,6 +9,8 @@ import { Particles } from "@/components/ui/particles";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
+import { useParallax } from "@/hooks/useParallax";
 
 const services = [
   { id: 1, name: "General Medicines", desc: "Comprehensive primary care and treatment for everyday illnesses and health concerns." },
@@ -124,6 +126,13 @@ function ServiceListItem({ service, onBookClick }: { service: { id: number; name
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // GSAP ScrollTrigger refs
+  const servicesHeaderRef = useScrollReveal({ y: 30, duration: 0.7 });
+  const servicesGridRef = useStaggerReveal<HTMLDivElement>(".service-card", { y: 50, stagger: 0.06, duration: 0.7 });
+  const footerRef = useScrollReveal({ y: 30, duration: 0.7, start: "top 90%" });
+  const particlesRef = useParallax<HTMLDivElement>({ y: -50 });
+  const dotPatternRef = useParallax<HTMLDivElement>({ y: -30 });
+
   return (
     <div className="min-h-screen site-bg text-white font-sans relative overflow-hidden selection:bg-blue-500/30">
       <DevToolsProtection />
@@ -133,8 +142,12 @@ export default function Home() {
 
       {/* Decorative layers for the content sections */}
       <div className="relative">
-        <Particles className="absolute inset-0 z-0 opacity-40" quantity={50} ease={70} color="#3b82f6" refresh />
-        <DotPattern className={"[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] z-0 opacity-20 fill-blue-400/20"} />
+        <div ref={particlesRef} className="absolute inset-0 z-0">
+          <Particles className="absolute inset-0 opacity-40" quantity={50} ease={70} color="#3b82f6" refresh />
+        </div>
+        <div ref={dotPatternRef} className="absolute inset-0 z-0">
+          <DotPattern className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] opacity-20 fill-blue-400/20" />
+        </div>
         <MouseGlow />
 
         {/* Booking Modal */}
@@ -173,31 +186,21 @@ export default function Home() {
           {/* Services Section */}
           <section id="services" className="py-24 relative z-10">
             <div className="max-w-6xl mx-auto px-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center mb-16 relative"
-              >
+              <div ref={servicesHeaderRef} className="text-center mb-16 relative">
                 <span className="bg-white/[0.06] backdrop-blur-md text-blue-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">Our Services</span>
-              </motion.div>
-              <motion.div
-                variants={servicesGridVariants}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.15 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
+              </div>
+              <div ref={servicesGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {services.map((service) => (
-                  <ServiceListItem key={service.id} service={service} onBookClick={() => setIsModalOpen(true)} />
+                  <div key={service.id} className="service-card">
+                    <ServiceListItem service={service} onBookClick={() => setIsModalOpen(true)} />
+                  </div>
                 ))}
-              </motion.div>
+              </div>
             </div>
           </section>
 
           {/* Footer */}
-          <footer id="reach-us" className="bg-black/40 text-white/40 py-16 text-center md:text-left rounded-t-[3rem] mt-12 relative z-10 border-t border-white/[0.06]">
+          <footer ref={footerRef} id="reach-us" className="bg-black/40 text-white/40 py-16 text-center md:text-left rounded-t-[3rem] mt-12 relative z-10 border-t border-white/[0.06]">
             <div className="max-w-6xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
               <div className="flex flex-col items-center md:items-start">
                 <Link href="/" className="text-2xl text-white font-extrabold mb-2 hover:text-blue-300 transition-colors">Heart Plus</Link>
