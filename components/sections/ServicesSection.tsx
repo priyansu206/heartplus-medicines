@@ -2,6 +2,7 @@
 
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 import { SERVICES } from "@/lib/constants";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 interface ServicesSectionProps {
   onBookClick: () => void;
@@ -17,7 +18,8 @@ function ServiceCard({
   const isGeneral = service.id === 1;
 
   return (
-    <div className="service-card group flex flex-col p-6 rounded-3xl relative overflow-hidden bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_48px_rgba(59,130,246,0.12)] hover:bg-white/[0.07] hover:border-blue-400/20 transition-all duration-300 transform-gpu">
+    <TiltCard className="service-card" maxTilt={8}>
+    <div className="group flex flex-col p-6 rounded-3xl relative overflow-hidden bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_48px_rgba(59,130,246,0.12)] hover:bg-white/[0.07] hover:border-blue-400/20 transition-all duration-300 transform-gpu">
       {/* Hover glow */}
       <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/[0.06] group-hover:to-purple-500/[0.04] transition-all duration-500 pointer-events-none" />
 
@@ -59,6 +61,7 @@ function ServiceCard({
         )}
       </div>
     </div>
+    </TiltCard>
   );
 }
 

@@ -2,6 +2,7 @@
 
 import { Star } from "lucide-react";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export interface Review {
   name: string;
@@ -89,9 +90,9 @@ export default function ReviewSection() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {googleReviews.map((review, index) => (
+            <TiltCard key={index} className="review-card" maxTilt={6} glareOpacity={0.1}>
             <div
-              key={index}
-              className="review-card group bg-white/[0.04] backdrop-blur-xl p-6 rounded-3xl border border-white/[0.08] flex flex-col justify-between shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:bg-white/[0.07] hover:border-rose-400/20 hover:shadow-[0_16px_48px_rgba(0,0,0,0.3)] transition-all duration-300 transform-gpu relative overflow-hidden"
+              className="group bg-white/[0.04] backdrop-blur-xl p-6 rounded-3xl border border-white/[0.08] flex flex-col justify-between shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:bg-white/[0.07] hover:border-rose-400/20 hover:shadow-[0_16px_48px_rgba(0,0,0,0.3)] transition-all duration-300 transform-gpu relative overflow-hidden"
             >
               {/* Hover glow */}
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-rose-500/0 to-rose-500/0 group-hover:from-rose-500/[0.06] group-hover:to-purple-500/[0.04] transition-all duration-500 pointer-events-none" />
@@ -127,6 +128,7 @@ export default function ReviewSection() {
                 </span>
               </div>
             </div>
+            </TiltCard>
           ))}
         </div>
       </div>

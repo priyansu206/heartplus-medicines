@@ -5,12 +5,16 @@ import { AnimatePresence, motion } from "motion/react";
 import HeroSection from "@/components/sections/HeroSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import ServicesSection from "@/components/sections/ServicesSection";
+import { HorizontalScroll } from "@/components/sections/HorizontalScroll";
+import { FeatureShowcase } from "@/components/sections/FeatureShowcase";
+import { PinnedParallax } from "@/components/sections/PinnedParallax";
 import Footer from "@/components/layout/Footer";
 import { BookingForm } from "@/components/forms/BookingForm";
 import { DevToolsProtection } from "@/components/providers/DevToolsProtection";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Particles } from "@/components/ui/particles";
 import { useParallax } from "@/hooks/useParallax";
+import { FloatingShapes } from "@/components/ui/FloatingShapes";
 import { SERVICES } from "@/lib/constants";
 
 function MouseGlow() {
@@ -75,6 +79,7 @@ export default function Home() {
           <DotPattern className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] opacity-20 fill-blue-400/20" />
         </div>
         <MouseGlow />
+        <FloatingShapes />
 
         {/* Booking Modal */}
         <AnimatePresence>
@@ -121,6 +126,9 @@ export default function Home() {
 
         <div className="relative z-10">
           <ReviewsSection />
+          <HorizontalScroll />
+          <FeatureShowcase />
+          <PinnedParallax />
           <ServicesSection onBookClick={() => setIsModalOpen(true)} />
           <Footer />
         </div>

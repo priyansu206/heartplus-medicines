@@ -2,6 +2,7 @@
 
 import { useParallax } from "@/hooks/useParallax";
 import { useTextReveal, useLineReveal } from "@/hooks/useTextReveal";
+import { useTextScramble } from "@/hooks/useTextScramble";
 import { useCountUp } from "@/hooks/useCountUp";
 import Navbar from "@/components/layout/Navbar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
@@ -44,8 +45,8 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ onBookClick }: HeroSectionProps) {
-  // Text reveal refs
-  const subtitleRef = useTextReveal({ delay: 0.1, stagger: 0.03 });
+  // Text animation refs
+  const subtitleRef = useTextScramble({ delay: 200, speed: 50 });
   const headingRef = useLineReveal({ delay: 0.3, stagger: 0.12 });
   const descRef = useTextReveal({ delay: 0.7, stagger: 0.02, duration: 0.6 });
 

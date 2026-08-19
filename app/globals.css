@@ -211,6 +211,13 @@ html.lenis, body.lenis {
 }
 
 @layer base {
+  /* Hide default cursor on desktop — custom cursor takes over */
+  @media (pointer: fine) {
+    *, *::before, *::after {
+      cursor: none !important;
+    }
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
