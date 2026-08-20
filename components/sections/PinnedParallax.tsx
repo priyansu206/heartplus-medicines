@@ -108,7 +108,7 @@ export function PinnedParallax() {
         <h2 ref={headingRef} className="text-3xl sm:text-6xl md:text-7xl font-black text-white leading-tight">
           Trust Built Over{" "}
           <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
-            10,000+
+            3,000+
           </span>{" "}
           Patient Lives
         </h2>
