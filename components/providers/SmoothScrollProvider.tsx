@@ -4,16 +4,9 @@ import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
-
-function isMobileDevice(): boolean {
-  if (typeof window === "undefined") return false;
-  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const narrow = window.innerWidth < 768;
-  return hasTouch || reducedMotion || narrow;
-}
 
 export default function SmoothScrollProvider({
   children,
@@ -25,12 +18,21 @@ export default function SmoothScrollProvider({
   useEffect(() => {
     const mobile = isMobileDevice();
 
+    // On mobile, skip Lenis entirely — native scroll is smoother
+    // and avoids a JS-driven rAF loop on every scroll frame.
+    if (mobile) {
+      // Still sync ScrollTrigger on native scroll
+      const onScroll = () => ScrollTrigger.update();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      return () => window.removeEventListener("scroll", onScroll);
+    }
+
     const lenis = new Lenis({
-      duration: mobile ? 0.6 : 1.0,
+      duration: 1.0,
       easing: (t) => {
         return 1 - Math.pow(1 - t, 4);
       },
-      touchMultiplier: mobile ? 0.8 : 1.5,
+      touchMultiplier: 1.5,
       infinite: false,
     });
 
@@ -42,8 +44,7 @@ export default function SmoothScrollProvider({
       lenis.raf(time * 1000);
     };
     gsap.ticker.add(raf);
-    // On mobile, allow GSAP lag smoothing to skip frames under pressure
-    gsap.ticker.lagSmoothing(mobile ? 500 : 0);
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();

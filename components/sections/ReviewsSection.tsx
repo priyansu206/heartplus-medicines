@@ -2,6 +2,7 @@
 
 import { Star } from "lucide-react";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
+import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { TiltCard } from "@/components/ui/TiltCard";
 
 export interface Review {
@@ -54,6 +55,7 @@ export const googleReviews: Review[] = [
 
 export default function ReviewSection() {
   const headerRef = useScrollReveal({ y: 30, duration: 0.7 });
+  const headingRef = useScrollTextReveal({ duration: 0.7, stagger: 0.05 });
   const gridRef = useStaggerReveal<HTMLDivElement>(".review-card", {
     y: 50,
     stagger: 0.1,
@@ -68,7 +70,7 @@ export default function ReviewSection() {
           <span className="bg-white/[0.06] backdrop-blur-md text-rose-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
             Patient Feedback
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-6">
+          <h2 ref={headingRef} className="text-3xl sm:text-4xl font-bold text-white mt-6">
             What Our Patients Say
           </h2>
           <div className="mt-6 inline-flex items-center gap-3 bg-white/[0.06] backdrop-blur-md px-5 py-3 rounded-full border border-white/[0.08]">

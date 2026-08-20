@@ -36,13 +36,17 @@ export function MagneticCursor() {
 
     const onMouseEnterInteractive = () => {
       gsap.to(ring, {
-        scale: 1.8,
-        borderColor: "rgba(59, 130, 246, 0.6)",
-        duration: 0.3,
+        scale: 2.2,
+        background: "rgba(59, 130, 246, 0.1)",
+        borderColor: "rgba(59, 130, 246, 0.4)",
+        boxShadow: "0 0 30px rgba(59, 130, 246, 0.12), inset 0 0 16px rgba(59, 130, 246, 0.06)",
+        duration: 0.4,
         ease: "power2.out",
       });
       gsap.to(dot, {
-        scale: 0.5,
+        scale: 0.4,
+        background: "rgba(59, 130, 246, 0.9)",
+        boxShadow: "0 0 12px rgba(59, 130, 246, 0.5)",
         duration: 0.3,
       });
     };
@@ -50,12 +54,16 @@ export function MagneticCursor() {
     const onMouseLeaveInteractive = () => {
       gsap.to(ring, {
         scale: 1,
-        borderColor: "rgba(255, 255, 255, 0.4)",
-        duration: 0.4,
+        background: "rgba(255, 255, 255, 0.06)",
+        borderColor: "rgba(255, 255, 255, 0.15)",
+        boxShadow: "0 0 20px rgba(255, 255, 255, 0.05), inset 0 0 12px rgba(255, 255, 255, 0.03)",
+        duration: 0.5,
         ease: "elastic.out(1, 0.4)",
       });
       gsap.to(dot, {
         scale: 1,
+        background: "rgba(255, 255, 255, 0.7)",
+        boxShadow: "0 0 8px rgba(255, 255, 255, 0.3)",
         duration: 0.3,
       });
     };
@@ -116,28 +124,33 @@ export function MagneticCursor() {
 
   return (
     <>
-      {/* Dot — follows instantly */}
+      {/* Dot — tiny translucent center */}
       <div
         ref={dotRef}
-        className="pointer-events-none fixed top-0 left-0 z-[9999] mix-blend-difference"
+        className="pointer-events-none fixed top-0 left-0 z-[9999]"
         style={{
-          width: 8,
-          height: 8,
+          width: 6,
+          height: 6,
           borderRadius: "50%",
-          background: "#fff",
+          background: "rgba(255, 255, 255, 0.7)",
+          boxShadow: "0 0 8px rgba(255, 255, 255, 0.3)",
           transform: "translate(-50%, -50%)",
           opacity: 0,
         }}
       />
-      {/* Ring — follows with lag */}
+      {/* Ring — frosted glass following with lag */}
       <div
         ref={ringRef}
         className="pointer-events-none fixed top-0 left-0 z-[9998]"
         style={{
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           borderRadius: "50%",
-          border: "1.5px solid rgba(255,255,255,0.4)",
+          background: "rgba(255, 255, 255, 0.06)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+          border: "1px solid rgba(255, 255, 255, 0.15)",
+          boxShadow: "0 0 20px rgba(255, 255, 255, 0.05), inset 0 0 12px rgba(255, 255, 255, 0.03)",
           transform: "translate(-50%, -50%)",
           opacity: 0,
         }}

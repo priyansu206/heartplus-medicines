@@ -2,6 +2,7 @@
 
 import { useClipReveal } from "@/hooks/useClipReveal";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 
 /**
  * A visual showcase section with dramatic clip-path reveals
@@ -9,8 +10,9 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
  */
 export function FeatureShowcase() {
   const orbRef = useClipReveal({ shape: "circle", duration: 1.5, ease: "power3.out" });
-  const titleRef = useScrollReveal({ y: 40, duration: 0.8 });
-  const textRef = useScrollReveal({ y: 30, duration: 0.8, delay: 0.15 });
+  const titleRef = useScrollTextReveal({ duration: 0.7, stagger: 0.05, delay: 0.1 });
+  const subtitleRef = useScrollTextReveal({ duration: 0.5, stagger: 0.03, delay: 0.3 });
+  const textRef = useScrollReveal({ y: 30, duration: 0.8, delay: 0.2 });
 
   return (
     <section className="py-32 relative overflow-hidden">
@@ -66,11 +68,11 @@ export function FeatureShowcase() {
 
         {/* Right — Text content */}
         <div className="flex flex-col gap-6">
-          <div ref={titleRef}>
-            <span className="text-violet-400 text-sm font-bold uppercase tracking-widest">
+          <div>
+            <span ref={subtitleRef} className="block text-violet-400 text-sm font-bold uppercase tracking-widest mb-3">
               Why Heart Plus
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 leading-tight">
+            <h2 ref={titleRef} className="text-3xl sm:text-4xl font-bold text-white leading-tight">
               Healthcare That{" "}
               <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
                 Actually Cares

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import HeroSection from "@/components/sections/HeroSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
@@ -11,62 +11,13 @@ import { PinnedParallax } from "@/components/sections/PinnedParallax";
 import Footer from "@/components/layout/Footer";
 import { BookingForm } from "@/components/forms/BookingForm";
 import { DevToolsProtection } from "@/components/providers/DevToolsProtection";
-import { DotPattern } from "@/components/ui/dot-pattern";
-import { Particles } from "@/components/ui/particles";
+import { DotPattern } from "@/components/ui/DotPattern";
+import { Particles } from "@/components/ui/Particles";
 import { useParallax } from "@/hooks/useParallax";
 import { FloatingShapes } from "@/components/ui/FloatingShapes";
 import { SERVICES } from "@/lib/constants";
-
-function isMobileDevice(): boolean {
-  if (typeof window === "undefined") return false;
-  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const narrow = window.innerWidth < 768;
-  return hasTouch || reducedMotion || narrow;
-}
-
-/** MouseGlow — skipped entirely on mobile to avoid per-touch CSS writes */
-function MouseGlow() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    // Only run on desktop with fine pointer
-    if (!isMobileDevice()) setEnabled(true);
-  }, []);
-
-  useEffect(() => {
-    if (!enabled) return;
-    let animationFrameId: number | null = null;
-    const handleMove = (e: MouseEvent) => {
-      if (animationFrameId !== null) return;
-      animationFrameId = requestAnimationFrame(() => {
-        animationFrameId = null;
-        if (ref.current) {
-          ref.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(59, 130, 246, 0.08), transparent 80%)`;
-        }
-      });
-    };
-    window.addEventListener("mousemove", handleMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMove);
-      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
-    };
-  }, [enabled]);
-
-  if (!enabled) return null;
-
-  return (
-    <div
-      ref={ref}
-      className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-75"
-      style={{
-        background:
-          "radial-gradient(600px circle at -1000px -1000px, rgba(59, 130, 246, 0.08), transparent 80%)",
-      }}
-    />
-  );
-}
+import { isMobileDevice } from "@/lib/isMobile";
+import { MouseGlow } from "@/components/ui/MouseGlow";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,9 +27,9 @@ export default function Home() {
     setIsMobile(isMobileDevice());
   }, []);
 
-  // Parallax for decorative layers — reduced on mobile
-  const particlesRef = useParallax<HTMLDivElement>({ y: isMobile ? -20 : -50 });
-  const dotPatternRef = useParallax<HTMLDivElement>({ y: isMobile ? -10 : -30 });
+  // Parallax for decorative layers — skipped entirely on mobile
+  const particlesRef = useParallax<HTMLDivElement>({ y: -50 });
+  const dotPatternRef = useParallax<HTMLDivElement>({ y: -30 });
 
   return (
     <div className="min-h-screen site-bg text-white font-sans relative overflow-hidden selection:bg-blue-500/30">
@@ -87,22 +38,26 @@ export default function Home() {
       {/* Fullscreen Hero */}
       <HeroSection onBookClick={() => setIsModalOpen(true)} />
 
-      {/* Decorative layers for the content sections */}
+      {/* Decorative layers for the content sections — skipped on mobile */}
       <div className="relative">
-        <div ref={particlesRef} className="absolute inset-0 z-0">
-          <Particles
-            className="absolute inset-0 opacity-40"
-            quantity={isMobile ? 20 : 50}
-            ease={isMobile ? 80 : 70}
-            color="#3b82f6"
-            refresh
-          />
-        </div>
-        <div ref={dotPatternRef} className="absolute inset-0 z-0">
-          <DotPattern className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] opacity-20 fill-blue-400/20" />
-        </div>
-        <MouseGlow />
-        <FloatingShapes />
+        {!isMobile && (
+          <>
+            <div ref={particlesRef} className="absolute inset-0 z-0">
+              <Particles
+                className="absolute inset-0 opacity-40"
+                quantity={50}
+                ease={70}
+                color="#3b82f6"
+                refresh
+              />
+            </div>
+            <div ref={dotPatternRef} className="absolute inset-0 z-0">
+              <DotPattern className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] opacity-20 fill-blue-400/20" />
+            </div>
+            <MouseGlow />
+            <FloatingShapes />
+          </>
+        )}
 
         {/* Booking Modal */}
         <AnimatePresence>

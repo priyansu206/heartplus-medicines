@@ -17,6 +17,8 @@ interface ParallaxOptions {
   end?: string;
   /** Element to scrub against — defaults to window scroller */
   scrub?: boolean | number;
+  /** Skip parallax entirely (e.g. on mobile) */
+  disabled?: boolean;
 }
 
 /**
@@ -37,7 +39,10 @@ export function useParallax<T extends HTMLElement = HTMLDivElement>(
       start = "top bottom",
       end = "bottom top",
       scrub = true,
+      disabled = false,
     } = options;
+
+    if (disabled) return; // skip ScrollTrigger on mobile
 
     const fromVars: gsap.TweenVars = {};
     const toVars: gsap.TweenVars = {

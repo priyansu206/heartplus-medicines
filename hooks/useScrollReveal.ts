@@ -6,6 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+import { isMobileDevice } from "@/lib/isMobile";
+
 interface ScrollRevealOptions {
   y?: number;
   opacity?: number;
@@ -15,6 +17,7 @@ interface ScrollRevealOptions {
   stagger?: number;
   start?: string;
   toggleActions?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -37,7 +40,10 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
       delay = 0,
       start = "top 85%",
       toggleActions = "play none none none",
+      disabled = false,
     } = options;
+
+    if (disabled || isMobileDevice()) return;
 
     gsap.fromTo(
       el,
@@ -90,7 +96,10 @@ export function useStaggerReveal<T extends HTMLElement = HTMLDivElement>(
       stagger = 0.08,
       start = "top 85%",
       toggleActions = "play none none none",
+      disabled = false,
     } = options;
+
+    if (disabled || isMobileDevice()) return;
 
     gsap.fromTo(
       children,

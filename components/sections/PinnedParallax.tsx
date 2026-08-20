@@ -3,16 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
+import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
-
-function isMobileDevice(): boolean {
-  if (typeof window === "undefined") return false;
-  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const narrow = window.innerWidth < 768;
-  return hasTouch || reducedMotion || narrow;
-}
 
 /**
  * A dramatic pinned section where background and foreground text
@@ -25,6 +19,7 @@ export function PinnedParallax() {
   const bgTextRef = useRef<HTMLDivElement>(null);
   const midTextRef = useRef<HTMLDivElement>(null);
   const fgTextRef = useRef<HTMLDivElement>(null);
+  const headingRef = useScrollTextReveal({ duration: 0.8, stagger: 0.08, delay: 0.15 });
   const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
@@ -110,7 +105,7 @@ export function PinnedParallax() {
         className="relative z-10 text-center px-6 max-w-3xl"
         style={isMobile ? { opacity: 1, transform: "none" } : undefined}
       >
-        <h2 className="text-3xl sm:text-6xl md:text-7xl font-black text-white leading-tight">
+        <h2 ref={headingRef} className="text-3xl sm:text-6xl md:text-7xl font-black text-white leading-tight">
           Trust Built Over{" "}
           <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
             10,000+

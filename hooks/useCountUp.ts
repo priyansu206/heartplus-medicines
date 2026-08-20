@@ -6,6 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+import { isMobileDevice } from "@/lib/isMobile";
+
 interface CountUpOptions {
   /** Target number to count to */
   target: number;
@@ -39,6 +41,12 @@ export function useCountUp<T extends HTMLElement = HTMLSpanElement>(
       decimals = 0,
       start = "top 85%",
     } = options;
+
+    // On mobile, show final value immediately — skip the GSAP count-up animation
+    if (isMobileDevice()) {
+      el.textContent = target.toFixed(decimals) + suffix;
+      return;
+    }
 
     const counter = { value: 0 };
 

@@ -24,16 +24,10 @@ const SHAPES: Shape[] = [
   { x: "60%", y: "40%", size: 20, type: "circle", color: "rgba(236,72,153,0.1)", duration: 4.5, delay: 0.3 },
 ];
 
+import { isMobileDevice } from "@/lib/isMobile";
+
 // On mobile, only render a few shapes with slower, simpler animations
 const MOBILE_SHAPES: Shape[] = SHAPES.slice(0, 3);
-
-function isMobileDevice(): boolean {
-  if (typeof window === "undefined") return false;
-  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const narrow = window.innerWidth < 768;
-  return hasTouch || reducedMotion || narrow;
-}
 
 /**
  * Floating decorative shapes scattered across the page.

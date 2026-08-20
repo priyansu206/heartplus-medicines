@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { isMobileDevice } from "@/lib/isMobile";
 import { useParallax } from "@/hooks/useParallax";
 import { useTextReveal, useLineReveal } from "@/hooks/useTextReveal";
 import { useTextScramble } from "@/hooks/useTextScramble";
@@ -49,9 +50,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    const narrow = window.innerWidth < 768;
-    setIsMobile(hasTouch || narrow);
+    setIsMobile(isMobileDevice());
   }, []);
 
   // Text animation refs
@@ -59,21 +58,24 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
   const headingRef = useLineReveal({ delay: 0.3, stagger: 0.12 });
   const descRef = useTextReveal({ delay: 0.7, stagger: 0.02, duration: 0.6 });
 
-  // Parallax refs — reduced offsets on mobile to avoid heavy compositing
+  // Parallax refs — skipped entirely on mobile to avoid ScrollTrigger overhead
   const videoRef = useParallax<HTMLDivElement>({
-    y: isMobile ? 40 : 120,
+    y: 120,
     start: "top top",
     end: "bottom top",
+    disabled: isMobile,
   });
   const contentRef = useParallax<HTMLDivElement>({
-    y: isMobile ? -20 : -60,
+    y: -60,
     start: "top top",
     end: "bottom top",
+    disabled: isMobile,
   });
   const glowRef = useParallax<HTMLDivElement>({
-    y: isMobile ? 15 : 40,
+    y: 40,
     start: "top top",
     end: "bottom top",
+    disabled: isMobile,
   });
 
   return (

@@ -3,21 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { SERVICES } from "@/lib/constants";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { Stethoscope, Brain, Heart, Baby, Droplets, Wind, Microscope, Pill, TestTube } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ICONS = [Pill, Stethoscope, Droplets, Microscope, Heart, Brain, Baby, Wind, TestTube];
+import { isMobileDevice } from "@/lib/isMobile";
 
-function isMobileDevice(): boolean {
-  if (typeof window === "undefined") return false;
-  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const narrow = window.innerWidth < 768;
-  return hasTouch || reducedMotion || narrow;
-}
+const ICONS = [Pill, Stethoscope, Droplets, Microscope, Heart, Brain, Baby, Wind, TestTube];
 
 /**
  * A pinned horizontal scroll section — user scrolls vertically but
@@ -28,6 +23,7 @@ function isMobileDevice(): boolean {
 export function HorizontalScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const mobileHeaderRef = useScrollTextReveal({ duration: 0.6, stagger: 0.05 });
   const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
@@ -69,7 +65,7 @@ export function HorizontalScroll() {
     >
       {/* Section header */}
       <div className={`${isMobile ? "relative mb-8" : "absolute top-12"} left-0 right-0 z-10 text-center px-6`}>
-        <span className="bg-white/[0.06] backdrop-blur-md text-violet-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
+        <span ref={isMobile ? mobileHeaderRef : undefined} className="inline-block bg-white/[0.06] backdrop-blur-md text-violet-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
           {isMobile ? "Our Specialties" : "Scroll to Explore"}
         </span>
         {!isMobile && (

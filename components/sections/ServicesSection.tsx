@@ -1,6 +1,7 @@
 "use client";
 
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
+import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { SERVICES } from "@/lib/constants";
 import { TiltCard } from "@/components/ui/TiltCard";
 
@@ -66,7 +67,7 @@ function ServiceCard({
 }
 
 export default function ServicesSection({ onBookClick }: ServicesSectionProps) {
-  const headerRef = useScrollReveal({ y: 30, duration: 0.7 });
+  const headerRef = useScrollTextReveal({ duration: 0.6, stagger: 0.06 });
   const gridRef = useStaggerReveal<HTMLDivElement>(".service-card", {
     y: 50,
     stagger: 0.06,
@@ -76,8 +77,8 @@ export default function ServicesSection({ onBookClick }: ServicesSectionProps) {
   return (
     <section id="services" className="py-24 relative z-10">
       <div className="max-w-6xl mx-auto px-6">
-        <div ref={headerRef} className="text-center mb-16 relative">
-          <span className="bg-white/[0.06] backdrop-blur-md text-blue-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
+        <div className="text-center mb-16 relative">
+          <span ref={headerRef} className="inline-block bg-white/[0.06] backdrop-blur-md text-blue-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
             Our Services
           </span>
         </div>

@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
+import { isMobileDevice } from "@/lib/isMobile";
 
 interface TiltCardProps {
   children: React.ReactNode;
@@ -28,9 +29,7 @@ export function TiltCard({
   const [isTouch, setIsTouch] = useState(true);
 
   useEffect(() => {
-    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    const narrow = window.innerWidth < 768;
-    setIsTouch(hasTouch || narrow);
+    setIsTouch(isMobileDevice());
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
