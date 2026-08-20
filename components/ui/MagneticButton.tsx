@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 
 interface MagneticButtonProps {
@@ -14,6 +14,7 @@ interface MagneticButtonProps {
 /**
  * A button that magnetically follows the cursor on hover.
  * Uses GSAP for buttery smooth spring animation.
+ * Skipped on touch/mobile devices.
  */
 export function MagneticButton({
   children,
@@ -22,8 +23,16 @@ export function MagneticButton({
   strength = 0.3,
 }: MagneticButtonProps) {
   const ref = useRef<HTMLButtonElement>(null);
+  const [isTouch, setIsTouch] = useState(true);
+
+  useEffect(() => {
+    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const narrow = window.innerWidth < 768;
+    setIsTouch(hasTouch || narrow);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (isTouch) return;
     const el = ref.current;
     if (!el) return;
 
@@ -40,6 +49,7 @@ export function MagneticButton({
   };
 
   const handleMouseLeave = () => {
+    if (isTouch) return;
     const el = ref.current;
     if (!el) return;
 

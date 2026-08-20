@@ -17,18 +17,33 @@ import { useParallax } from "@/hooks/useParallax";
 import { FloatingShapes } from "@/components/ui/FloatingShapes";
 import { SERVICES } from "@/lib/constants";
 
+function isMobileDevice(): boolean {
+  if (typeof window === "undefined") return false;
+  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const narrow = window.innerWidth < 768;
+  return hasTouch || reducedMotion || narrow;
+}
+
+/** MouseGlow — skipped entirely on mobile to avoid per-touch CSS writes */
 function MouseGlow() {
   const ref = useRef<HTMLDivElement>(null);
+  const [enabled, setEnabled] = useState(false);
+
   useEffect(() => {
+    // Only run on desktop with fine pointer
+    if (!isMobileDevice()) setEnabled(true);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     let animationFrameId: number | null = null;
-    const handleMove = (e: MouseEvent | TouchEvent) => {
+    const handleMove = (e: MouseEvent) => {
       if (animationFrameId !== null) return;
-      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-      const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
       animationFrameId = requestAnimationFrame(() => {
         animationFrameId = null;
         if (ref.current) {
-          ref.current.style.background = `radial-gradient(600px circle at ${clientX}px ${clientY}px, rgba(59, 130, 246, 0.08), transparent 80%)`;
+          ref.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(59, 130, 246, 0.08), transparent 80%)`;
         }
       });
     };
@@ -37,7 +52,10 @@ function MouseGlow() {
       window.removeEventListener("mousemove", handleMove);
       if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
+
   return (
     <div
       ref={ref}
@@ -52,10 +70,15 @@ function MouseGlow() {
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Parallax for decorative layers
-  const particlesRef = useParallax<HTMLDivElement>({ y: -50 });
-  const dotPatternRef = useParallax<HTMLDivElement>({ y: -30 });
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+  }, []);
+
+  // Parallax for decorative layers — reduced on mobile
+  const particlesRef = useParallax<HTMLDivElement>({ y: isMobile ? -20 : -50 });
+  const dotPatternRef = useParallax<HTMLDivElement>({ y: isMobile ? -10 : -30 });
 
   return (
     <div className="min-h-screen site-bg text-white font-sans relative overflow-hidden selection:bg-blue-500/30">
@@ -69,8 +92,8 @@ export default function Home() {
         <div ref={particlesRef} className="absolute inset-0 z-0">
           <Particles
             className="absolute inset-0 opacity-40"
-            quantity={50}
-            ease={70}
+            quantity={isMobile ? 20 : 50}
+            ease={isMobile ? 80 : 70}
             color="#3b82f6"
             refresh
           />

@@ -1,12 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useParallax } from "@/hooks/useParallax";
 import { useTextReveal, useLineReveal } from "@/hooks/useTextReveal";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { useCountUp } from "@/hooks/useCountUp";
 import Navbar from "@/components/layout/Navbar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react"
 
 function StatCounter({
   target,
@@ -45,24 +46,32 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ onBookClick }: HeroSectionProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const narrow = window.innerWidth < 768;
+    setIsMobile(hasTouch || narrow);
+  }, []);
+
   // Text animation refs
   const subtitleRef = useTextScramble({ delay: 200, speed: 50 });
   const headingRef = useLineReveal({ delay: 0.3, stagger: 0.12 });
   const descRef = useTextReveal({ delay: 0.7, stagger: 0.02, duration: 0.6 });
 
-  // Parallax refs
+  // Parallax refs — reduced offsets on mobile to avoid heavy compositing
   const videoRef = useParallax<HTMLDivElement>({
-    y: 120,
+    y: isMobile ? 40 : 120,
     start: "top top",
     end: "bottom top",
   });
   const contentRef = useParallax<HTMLDivElement>({
-    y: -60,
+    y: isMobile ? -20 : -60,
     start: "top top",
     end: "bottom top",
   });
   const glowRef = useParallax<HTMLDivElement>({
-    y: 40,
+    y: isMobile ? 15 : 40,
     start: "top top",
     end: "bottom top",
   });

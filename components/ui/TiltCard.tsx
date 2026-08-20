@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 
 interface TiltCardProps {
@@ -15,6 +15,7 @@ interface TiltCardProps {
 /**
  * A card that tilts in 3D toward the cursor with a glare effect.
  * Like Apple's product page cards.
+ * On touch/mobile devices the 3D tilt is skipped for performance.
  */
 export function TiltCard({
   children,
@@ -24,8 +25,16 @@ export function TiltCard({
 }: TiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const glareRef = useRef<HTMLDivElement>(null);
+  const [isTouch, setIsTouch] = useState(true);
+
+  useEffect(() => {
+    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const narrow = window.innerWidth < 768;
+    setIsTouch(hasTouch || narrow);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (isTouch) return;
     const card = cardRef.current;
     const glare = glareRef.current;
     if (!card || !glare) return;
@@ -47,7 +56,6 @@ export function TiltCard({
       ease: "power2.out",
     });
 
-    // Move glare to follow cursor
     const glareX = (x / rect.width) * 100;
     const glareY = (y / rect.height) * 100;
 
@@ -59,6 +67,7 @@ export function TiltCard({
   };
 
   const handleMouseLeave = () => {
+    if (isTouch) return;
     const card = cardRef.current;
     const glare = glareRef.current;
     if (!card || !glare) return;
@@ -80,17 +89,19 @@ export function TiltCard({
     <div
       ref={cardRef}
       className={`relative ${className}`}
-      style={{ transformStyle: "preserve-3d" }}
+      style={isTouch ? undefined : { transformStyle: "preserve-3d" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
       {children}
-      {/* Glare overlay */}
-      <div
-        ref={glareRef}
-        className="absolute inset-0 rounded-3xl pointer-events-none opacity-0"
-        style={{ transformStyle: "preserve-3d", transform: "translateZ(1px)" }}
-      />
+      {/* Glare overlay — skipped on touch */}
+      {!isTouch && (
+        <div
+          ref={glareRef}
+          className="absolute inset-0 rounded-3xl pointer-events-none opacity-0"
+          style={{ transformStyle: "preserve-3d", transform: "translateZ(1px)" }}
+        />
+      )}
     </div>
   );
 }
