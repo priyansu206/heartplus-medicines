@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import HeroSection from "@/components/sections/HeroSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
@@ -16,18 +16,12 @@ import { Particles } from "@/components/ui/Particles";
 import { useParallax } from "@/hooks/useParallax";
 import { FloatingShapes } from "@/components/ui/FloatingShapes";
 import { SERVICES } from "@/lib/constants";
-import { isMobileDevice } from "@/lib/isMobile";
 import { MouseGlow } from "@/components/ui/MouseGlow";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    setIsMobile(isMobileDevice());
-  }, []);
-
-  // Parallax for decorative layers — skipped entirely on mobile
+  // Parallax for decorative layers — runs on every device
   const particlesRef = useParallax<HTMLDivElement>({ y: -50 });
   const dotPatternRef = useParallax<HTMLDivElement>({ y: -30 });
 
@@ -38,26 +32,22 @@ export default function Home() {
       {/* Fullscreen Hero */}
       <HeroSection onBookClick={() => setIsModalOpen(true)} />
 
-      {/* Decorative layers for the content sections — skipped on mobile */}
+      {/* Decorative layers for the content sections */}
       <div className="relative">
-        {!isMobile && (
-          <>
-            <div ref={particlesRef} className="absolute inset-0 z-0">
-              <Particles
-                className="absolute inset-0 opacity-40"
-                quantity={50}
-                ease={70}
-                color="#3b82f6"
-                refresh
-              />
-            </div>
-            <div ref={dotPatternRef} className="absolute inset-0 z-0">
-              <DotPattern className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] opacity-20 fill-blue-400/20" />
-            </div>
-            <MouseGlow />
-            <FloatingShapes />
-          </>
-        )}
+        <div ref={particlesRef} className="absolute inset-0 z-0">
+          <Particles
+            className="absolute inset-0 opacity-40"
+            quantity={50}
+            ease={70}
+            color="#3b82f6"
+            refresh
+          />
+        </div>
+        <div ref={dotPatternRef} className="absolute inset-0 z-0">
+          <DotPattern className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] opacity-20 fill-blue-400/20" />
+        </div>
+        <MouseGlow />
+        <FloatingShapes />
 
         {/* Booking Modal */}
         <AnimatePresence>

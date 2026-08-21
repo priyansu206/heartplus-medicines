@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
-import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
  * A dramatic pinned section where background and foreground text
  * layers move at different speeds creating a deep parallax effect.
- * On mobile the pinned/scrub animation is skipped — content is shown statically
- * to avoid the heavy GPU compositing that causes jank.
+ * The pinned/scrub animation runs on every device — transform-only
+ * tweens stay GPU-composited on mobile.
  */
 export function PinnedParallax() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -20,15 +19,8 @@ export function PinnedParallax() {
   const midTextRef = useRef<HTMLDivElement>(null);
   const fgTextRef = useRef<HTMLDivElement>(null);
   const headingRef = useScrollTextReveal({ duration: 0.8, stagger: 0.08, delay: 0.15 });
-  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
-    setIsMobile(isMobileDevice());
-  }, []);
-
-  useEffect(() => {
-    if (isMobile) return; // skip pinned animation on mobile
-
     const section = sectionRef.current;
     const bgText = bgTextRef.current;
     const midText = midTextRef.current;
@@ -42,6 +34,7 @@ export function PinnedParallax() {
         scrub: 0.8,
         start: "top top",
         end: "+=200%",
+        anticipatePin: 1,
       },
     });
 
@@ -72,12 +65,12 @@ export function PinnedParallax() {
       tl.scrollTrigger?.kill();
       tl.kill();
     };
-  }, [isMobile]);
+  }, []);
 
   return (
     <section
       ref={sectionRef}
-      className={`relative overflow-hidden flex items-center justify-center ${isMobile ? "py-24" : "h-screen"}`}
+      className="relative overflow-hidden flex items-center justify-center h-screen"
     >
       {/* Deep background layer */}
       <div
@@ -100,11 +93,7 @@ export function PinnedParallax() {
       </div>
 
       {/* Foreground — main message */}
-      <div
-        ref={fgTextRef}
-        className="relative z-10 text-center px-6 max-w-3xl"
-        style={isMobile ? { opacity: 1, transform: "none" } : undefined}
-      >
+      <div className="relative z-10 text-center px-6 max-w-3xl">
         <h2 ref={headingRef} className="text-3xl sm:text-6xl md:text-7xl font-black text-white leading-tight">
           Trust Built Over{" "}
           <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">

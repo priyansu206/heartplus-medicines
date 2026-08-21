@@ -8,8 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 type ClipShape = "circle" | "inset" | "polygon";
 
-import { isMobileDevice } from "@/lib/isMobile";
-
 interface ClipRevealOptions {
   /** Shape to reveal with */
   shape?: ClipShape;
@@ -42,9 +40,6 @@ export function useClipReveal<T extends HTMLElement = HTMLDivElement>(
       delay = 0,
       start = "top 80%",
     } = options;
-
-    // On mobile, show element immediately — skip clip-path animation
-    if (isMobileDevice()) return;
 
     const fromClip: Record<ClipShape, string> = {
       circle: "circle(0% at 50% 50%)",

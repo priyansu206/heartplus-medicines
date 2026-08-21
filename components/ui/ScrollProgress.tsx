@@ -3,20 +3,17 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
  * A thin gradient bar at the top of the viewport that fills as you scroll.
- * Skipped on mobile to avoid a ScrollTrigger + GSAP ticker overhead.
+ * Runs on every device — a single scaleX scrub is trivially cheap on mobile.
  */
 export function ScrollProgress() {
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isMobileDevice()) return; // skip on mobile
-
     const bar = barRef.current;
     if (!bar) return;
 
@@ -37,9 +34,6 @@ export function ScrollProgress() {
       });
     };
   }, []);
-
-  // Don't render anything on mobile
-  if (typeof window !== "undefined" && isMobileDevice()) return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[200] h-[3px] bg-transparent">

@@ -116,7 +116,9 @@ html.lenis, body.lenis {
 /* Animated page background.
    Animating transform (not background-position) keeps this on the GPU —
    the layer is 3x the viewport so it never reveals its edges while drifting.
-   On mobile we shrink the layer and slow the animation to reduce GPU load. */
+   On mobile we shrink the layer (-25% inset = 1.5x viewport) and slow the
+   animation — still fully covers the ±6% drift while using ~6x less GPU
+   memory than the desktop layer. */
 .site-bg-anim {
   position: fixed;
   inset: -100%;
@@ -127,11 +129,11 @@ html.lenis, body.lenis {
   will-change: transform;
 }
 
-/* On mobile: disable the animated background entirely to save GPU cycles */
+/* Mobile: same flowing gradient, smaller layer + slower cycle */
 @media (max-width: 767px) {
   .site-bg-anim {
-    animation: none;
-    inset: 0;
+    inset: -25%;
+    animation-duration: 36s;
   }
 }
 
@@ -224,15 +226,6 @@ html.lenis, body.lenis {
   @media (pointer: fine) {
     *, *::before, *::after {
       cursor: none !important;
-    }
-  }
-
-  /* Mobile: disable backdrop-filter entirely — it's the single most expensive
-     CSS property on mobile GPUs and causes constant compositor repaints. */
-  @media (max-width: 767px) {
-    * {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
     }
   }
 

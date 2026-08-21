@@ -160,7 +160,7 @@ export const Particles: React.FC<ParticlesProps> = ({
       resizeTimeout.current = setTimeout(initCanvas, 200)
     }
 
-    const handleMouseMove = (event: MouseEvent) => {
+    const handlePointerMove = (event: PointerEvent) => {
       rawMouse.current.x = event.clientX
       rawMouse.current.y = event.clientY
       const { left, top, width: w, height: h } = canvasRect.current
@@ -184,14 +184,14 @@ export const Particles: React.FC<ParticlesProps> = ({
       }
     }
 
-    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("pointermove", handlePointerMove, { passive: true })
     animate()
 
     return () => {
       if (rafID.current != null) window.cancelAnimationFrame(rafID.current)
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current)
       window.removeEventListener("resize", handleResize)
-      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("pointermove", handlePointerMove)
     }
   }, [quantity, staticity, ease, size, vx, vy, dpr, rgbaPrefix])
 

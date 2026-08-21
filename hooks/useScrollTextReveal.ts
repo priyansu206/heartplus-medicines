@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,7 +17,6 @@ interface ScrollTextRevealOptions {
 /**
  * Word-by-word slide-up reveal triggered by scroll.
  * Each word is wrapped in a clip container so it slides up from below.
- * Skipped on mobile — text shown immediately.
  */
 export function useScrollTextReveal<T extends HTMLElement = HTMLDivElement>(
   options: ScrollTextRevealOptions = {}
@@ -36,9 +34,6 @@ export function useScrollTextReveal<T extends HTMLElement = HTMLDivElement>(
       delay = 0,
       start = "top 85%",
     } = options;
-
-    // On mobile, skip ScrollTrigger animation — show text immediately
-    if (isMobileDevice()) return;
 
     const text = el.textContent || "";
     const words = text.split(/\s+/).filter(Boolean);
@@ -80,7 +75,6 @@ export function useScrollTextReveal<T extends HTMLElement = HTMLDivElement>(
 /**
  * Line-by-line slide-up reveal triggered by scroll.
  * Splits text by newlines — each line slides up independently.
- * Skipped on mobile — text shown immediately.
  */
 export function useScrollLineReveal<T extends HTMLElement = HTMLHeadingElement>(
   options: ScrollTextRevealOptions = {}
@@ -98,9 +92,6 @@ export function useScrollLineReveal<T extends HTMLElement = HTMLHeadingElement>(
       delay = 0,
       start = "top 85%",
     } = options;
-
-    // On mobile, skip ScrollTrigger animation — show text immediately
-    if (isMobileDevice()) return;
 
     const text = el.textContent || "";
     const lines = text.split(/\n/).map((l) => l.trim()).filter(Boolean);

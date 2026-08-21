@@ -8,6 +8,11 @@ import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Mobile browsers fire resize when the address bar hides/shows — without
+// this, every such resize triggers a ScrollTrigger.refresh() and pinned
+// sections visibly jump mid-scroll.
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 export default function SmoothScrollProvider({
   children,
 }: {
@@ -16,11 +21,17 @@ export default function SmoothScrollProvider({
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    const mobile = isMobileDevice();
+    const reducedMotion = isMobileDevice();
 
-    // On mobile, skip Lenis entirely — native scroll is smoother
-    // and avoids a JS-driven rAF loop on every scroll frame.
-    if (mobile) {
+    // Touch devices keep native momentum scrolling — it's smoother than any
+    // JS-driven smoothing and avoids a rAF loop on every scroll frame.
+    // ScrollTrigger still syncs on native scroll below.
+    // Reduced-motion users skip Lenis for the same reason.
+    const coarsePointer =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
+
+    if (coarsePointer || reducedMotion) {
       // Still sync ScrollTrigger on native scroll
       const onScroll = () => ScrollTrigger.update();
       window.addEventListener("scroll", onScroll, { passive: true });

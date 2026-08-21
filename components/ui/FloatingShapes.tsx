@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 interface Shape {
@@ -24,23 +24,14 @@ const SHAPES: Shape[] = [
   { x: "60%", y: "40%", size: 20, type: "circle", color: "rgba(236,72,153,0.1)", duration: 4.5, delay: 0.3 },
 ];
 
-import { isMobileDevice } from "@/lib/isMobile";
-
-// On mobile, only render a few shapes with slower, simpler animations
-const MOBILE_SHAPES: Shape[] = SHAPES.slice(0, 3);
-
 /**
  * Floating decorative shapes scattered across the page.
  * Each shape bobs up and down at a unique speed using GSAP.
- * On mobile, only 3 shapes are shown with slower, simpler animations.
+ * Full set of shapes and animations runs on every device —
+ * GSAP transform tweens stay on the compositor even on phones.
  */
 export function FloatingShapes() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mobile, setMobile] = useState(false);
-
-  useEffect(() => {
-    setMobile(isMobileDevice());
-  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -50,16 +41,14 @@ export function FloatingShapes() {
     const tweens: gsap.core.Tween[] = [];
 
     shapes.forEach((shape, i) => {
-      const shapes = mobile ? MOBILE_SHAPES : SHAPES;
-      const config = shapes[i];
+      const config = SHAPES[i];
       if (!config) return;
 
-      // On mobile, only do simple vertical bob — no rotation or scale pulse
       const bob = gsap.to(shape, {
-        y: mobile ? `random(-12, 12)` : `random(-20, 20)`,
-        x: mobile ? 0 : `random(-10, 10)`,
-        rotation: mobile ? 0 : `random(-8, 8)`,
-        duration: mobile ? config.duration * 1.5 : config.duration,
+        y: `random(-20, 20)`,
+        x: `random(-10, 10)`,
+        rotation: `random(-8, 8)`,
+        duration: config.duration,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
@@ -68,26 +57,21 @@ export function FloatingShapes() {
 
       tweens.push(bob);
 
-      // Skip scale pulse on mobile entirely
-      if (!mobile) {
-        const pulse = gsap.to(shape, {
-          scale: `random(0.9, 1.15)`,
-          duration: config.duration * 0.7,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          delay: config.delay + 0.5,
-        });
-        tweens.push(pulse);
-      }
+      const pulse = gsap.to(shape, {
+        scale: `random(0.9, 1.15)`,
+        duration: config.duration * 0.7,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: config.delay + 0.5,
+      });
+      tweens.push(pulse);
     });
 
     return () => {
       tweens.forEach((t) => t.kill());
     };
-  }, [mobile]);
-
-  const activeShapes = mobile ? MOBILE_SHAPES : SHAPES;
+  }, []);
 
   return (
     <div
@@ -95,7 +79,7 @@ export function FloatingShapes() {
       className="absolute inset-0 overflow-hidden pointer-events-none z-0"
       aria-hidden="true"
     >
-      {activeShapes.map((shape, i) => {
+      {SHAPES.map((shape, i) => {
         const baseClasses =
           "floating-shape absolute will-change-transform";
 

@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 /**
  * Custom magnetic cursor with dot + trailing ring.
  * Ring morphs when hovering interactive elements.
+ * Uses Pointer Events so it also follows touch drags on mobile.
  */
 export function MagneticCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -16,8 +17,8 @@ export function MagneticCursor() {
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    // Hide on mobile / touch devices
-    if ("ontouchstart" in window) {
+    // Respect reduced-motion preference — no cursor layer at all
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       dot.style.display = "none";
       ring.style.display = "none";
       return;
@@ -26,7 +27,7 @@ export function MagneticCursor() {
     let mouseX = 0;
     let mouseY = 0;
 
-    const onMouseMove = (e: MouseEvent) => {
+    const onPointerMove = (e: PointerEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
 
@@ -95,7 +96,7 @@ export function MagneticCursor() {
     const interactiveSelector =
       "a, button, input, select, textarea, [role='button'], label";
 
-    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("pointermove", onPointerMove);
     document.addEventListener("mouseleave", onMouseLeaveWindow);
     document.addEventListener("mouseenter", onMouseEnterWindow);
 
@@ -114,7 +115,7 @@ export function MagneticCursor() {
 
     return () => {
       gsap.ticker.remove(ringTicker);
-      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("pointermove", onPointerMove);
       document.removeEventListener("mouseleave", onMouseLeaveWindow);
       document.removeEventListener("mouseenter", onMouseEnterWindow);
       document.removeEventListener("mouseover", onOver);

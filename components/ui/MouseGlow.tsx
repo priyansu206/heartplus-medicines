@@ -1,40 +1,38 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { isMobileDevice } from "@/lib/isMobile";
+import { useEffect, useRef } from "react";
 
 /**
- * A subtle radial gradient that follows the mouse cursor.
- * Skipped entirely on mobile to avoid per-move CSS writes.
+ * A subtle radial gradient that follows the pointer.
+ * Uses Pointer Events so it works with both mouse and touch drags.
+ * Writes are rAF-throttled to one style update per frame.
  */
 export function MouseGlow() {
   const ref = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    if (!isMobileDevice()) setEnabled(true);
-  }, []);
-
-  useEffect(() => {
-    if (!enabled) return;
     let animationFrameId: number | null = null;
-    const handleMove = (e: MouseEvent) => {
-      if (animationFrameId !== null) return;
-      animationFrameId = requestAnimationFrame(() => {
-        animationFrameId = null;
-        if (ref.current) {
-          ref.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(59, 130, 246, 0.08), transparent 80%)`;
-        }
-      });
+    let lastEvent: PointerEvent | null = null;
+
+    const applyGlow = () => {
+      animationFrameId = null;
+      if (ref.current && lastEvent) {
+        ref.current.style.background = `radial-gradient(600px circle at ${lastEvent.clientX}px ${lastEvent.clientY}px, rgba(59, 130, 246, 0.08), transparent 80%)`;
+      }
     };
-    window.addEventListener("mousemove", handleMove);
+
+    const handleMove = (e: PointerEvent) => {
+      lastEvent = e;
+      if (animationFrameId !== null) return;
+      animationFrameId = requestAnimationFrame(applyGlow);
+    };
+
+    window.addEventListener("pointermove", handleMove, { passive: true });
     return () => {
-      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("pointermove", handleMove);
       if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
     };
-  }, [enabled]);
-
-  if (!enabled) return null;
+  }, []);
 
   return (
     <div
