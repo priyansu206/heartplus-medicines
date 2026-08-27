@@ -44,9 +44,37 @@ export function HorizontalScroll() {
       },
     });
 
+    // Morph cards as they scroll into the horizontal view
+    const cards = track.querySelectorAll<HTMLElement>(".scroll-card");
+    cards.forEach((card, i) => {
+      gsap.fromTo(
+        card,
+        { opacity: 0, scale: 0.85, filter: "blur(4px)" },
+        {
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.8,
+          delay: i * 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            containerAnimation: scrollTween,
+            start: "left 80%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    });
+
     return () => {
       scrollTween.scrollTrigger?.kill();
       scrollTween.kill();
+      cards.forEach((card) => {
+        ScrollTrigger.getAll().forEach((st) => {
+          if (st.trigger === card) st.kill();
+        });
+      });
     };
   }, []);
 
@@ -75,7 +103,7 @@ export function HorizontalScroll() {
           const Icon = ICONS[i] || Pill;
           return (
             <TiltCard key={service.id} maxTilt={10} glareOpacity={0.12}>
-              <div className="w-[340px] flex-shrink-0 p-8 rounded-3xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] flex flex-col gap-5 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-violet-400/20 transition-colors duration-300">
+              <div className="scroll-card w-[340px] flex-shrink-0 p-8 rounded-3xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] flex flex-col gap-5 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:border-violet-400/20 transition-colors duration-300">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center border border-white/[0.08]">
                   <Icon className="w-7 h-7 text-violet-300" />
                 </div>

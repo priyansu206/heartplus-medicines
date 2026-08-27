@@ -1,0 +1,168 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+interface Blob {
+  x: string;
+  y: string;
+  size: number;
+  color: string;
+  /** SVG path data for different morph states */
+  paths: string[];
+  scrollStart: string;
+  scrollEnd: string;
+}
+
+const BLOBS: Blob[] = [
+  {
+    x: "10%",
+    y: "20%",
+    size: 400,
+    color: "rgba(99, 102, 241, 0.12)",
+    paths: [
+      "M44.5,-76.3C56.2,-69.1,63.2,-54.5,69.5,-40C75.8,-25.5,81.4,-11.1,80.4,2.7C79.4,16.5,71.8,29.7,63.1,41.5C54.4,53.3,44.6,63.7,32.6,70.5C20.6,77.3,6.4,80.5,-7.6,79.5C-21.6,78.5,-35.4,73.3,-47.1,65.3C-58.8,57.3,-68.4,46.5,-73.8,33.5C-79.2,20.5,-80.4,5.3,-78.2,-9.1C-76,-23.5,-70.4,-37.1,-61.2,-47.3C-52,-57.5,-39.2,-64.3,-26.3,-70.7C-13.4,-77.1,0.5,-83.1,14.1,-81.4C27.7,-79.7,32.8,-83.5,44.5,-76.3Z",
+      "M39.3,-65.7C52.9,-60.3,67.9,-54.8,74.4,-43.5C80.9,-32.2,78.9,-15.1,76.1,1C73.3,17.1,69.7,33.3,61.5,46.3C53.3,59.3,40.5,69.1,26.1,74.2C11.7,79.3,-4.3,79.7,-19.1,75.5C-33.9,71.3,-47.5,62.5,-57.5,50.5C-67.5,38.5,-73.9,23.3,-76.3,7.3C-78.7,-8.7,-77.1,-25.5,-69.3,-38.3C-61.5,-51.1,-47.5,-59.9,-33.3,-65.1C-19.1,-70.3,-4.7,-71.9,5.3,-69.5C15.3,-67.1,25.7,-71.1,39.3,-65.7Z",
+      "M42.1,-72.5C54.8,-65.3,65.3,-53.7,72.3,-40.3C79.3,-26.9,82.8,-11.7,81.2,2.8C79.6,17.3,72.9,31.1,64.1,42.7C55.3,54.3,44.4,63.7,31.8,70.1C19.2,76.5,4.9,79.9,-9.4,78.7C-23.7,77.5,-38,71.7,-49.8,62.7C-61.6,53.7,-70.9,41.5,-75.1,27.5C-79.3,13.5,-78.4,-2.3,-74.1,-16.5C-69.8,-30.7,-62.1,-43.3,-51.1,-51.7C-40.1,-60.1,-25.8,-64.3,-11.1,-67.1C3.6,-69.9,29.4,-79.7,42.1,-72.5Z",
+    ],
+    scrollStart: "top bottom",
+    scrollEnd: "bottom top",
+  },
+  {
+    x: "75%",
+    y: "40%",
+    size: 350,
+    color: "rgba(168, 85, 247, 0.10)",
+    paths: [
+      "M41.4,-70.2C54.9,-63.6,68,-54.8,74.6,-42.4C81.2,-30,81.3,-14,78.5,0.8C75.7,15.6,70,29.2,62.1,40.8C54.2,52.4,44.1,62,32.1,68.4C20.1,74.8,6.2,78,-8.1,77.4C-22.4,76.8,-37.1,72.4,-48.5,64C-59.9,55.6,-68,43.2,-72.8,29.2C-77.6,15.2,-79.1,-0.4,-76.3,-14.6C-73.5,-28.8,-66.4,-41.6,-56,-50.4C-45.6,-59.2,-31.9,-64,-18.5,-68.5C-5.1,-73,8.8,-77.2,22.1,-76.7C35.4,-76.2,48.1,-71,41.4,-70.2Z",
+      "M43.5,-74.7C56.2,-67.3,66.2,-55.3,73.3,-42C80.4,-28.7,84.6,-14.3,83.4,-0.6C82.2,13.1,75.6,26.2,67.3,37.7C59,49.2,49,59.1,37.1,65.8C25.2,72.5,11.4,76,-3.1,76.6C-17.6,77.2,-32.8,74.9,-44.8,67.6C-56.8,60.3,-65.6,48,-70.6,34.1C-75.6,20.2,-76.8,4.7,-74.6,-9.8C-72.4,-24.3,-66.8,-37.8,-57.3,-47.5C-47.8,-57.2,-34.4,-63.1,-21,-67.5C-7.6,-71.9,5.8,-74.8,19.5,-75.3C33.2,-75.8,29.2,-73.9,43.5,-74.7Z",
+      "M38.9,-66.1C51.3,-59.5,62.8,-51,69.5,-39.5C76.2,-28,78.1,-13.5,77.2,0.7C76.3,14.9,72.6,28.7,65.2,40.1C57.8,51.5,46.7,60.5,34.1,66.3C21.5,72.1,7.4,74.7,-6.4,74.3C-20.2,73.9,-33.7,70.5,-44.6,63.3C-55.5,56.1,-63.8,45.1,-69.1,32.5C-74.4,19.9,-76.7,5.7,-74.8,-7.7C-72.9,-21.1,-66.8,-33.7,-57.5,-42.7C-48.2,-51.7,-35.7,-57.1,-23.3,-63.7C-10.9,-70.3,1.4,-78,13.5,-77.5C25.6,-77,26.5,-72.7,38.9,-66.1Z",
+    ],
+    scrollStart: "top bottom",
+    scrollEnd: "bottom top",
+  },
+  {
+    x: "40%",
+    y: "70%",
+    size: 300,
+    color: "rgba(59, 130, 246, 0.08)",
+    paths: [
+      "M45.8,-78.2C58.8,-71.2,68.5,-57.6,74.8,-43C81.1,-28.4,84,-12.8,82.3,2.2C80.6,17.2,74.3,31.6,65.5,43C56.7,54.4,45.4,62.8,32.8,68.8C20.2,74.8,6.3,78.4,-7.6,78.3C-21.5,78.2,-35.4,74.4,-47.1,66.8C-58.8,59.2,-68.3,47.8,-73.7,34.4C-79.1,21,-80.4,5.6,-78.2,-9.4C-76,-24.4,-70.3,-39,-60.6,-49.1C-50.9,-59.2,-37.2,-64.8,-23.6,-70.6C-10,-76.4,3.5,-82.4,17.2,-82.4C30.9,-82.4,32.8,-85.2,45.8,-78.2Z",
+      "M41.1,-71.3C54.1,-64.3,66.1,-54.3,73.2,-41.5C80.3,-28.7,82.5,-13.1,80.7,1.8C78.9,16.7,73.1,30.9,64.7,42.7C56.3,54.5,45.3,63.9,32.8,69.9C20.3,75.9,6.3,78.5,-7.5,77.6C-21.3,76.7,-34.9,72.3,-46.4,64.3C-57.9,56.3,-67.3,44.7,-72.5,31.3C-77.7,17.9,-78.7,2.7,-76,-11.7C-73.3,-26.1,-66.9,-39.7,-57.1,-48.7C-47.3,-57.7,-34.1,-62.1,-21.1,-67.7C-8.1,-73.3,4.7,-80.1,17.9,-80.3C31.1,-80.5,28.1,-78.3,41.1,-71.3Z",
+      "M37.5,-64.9C49.4,-58.9,60.3,-50.5,67.5,-39.3C74.7,-28.1,78.2,-14.1,77.5,-0.3C76.8,13.5,71.9,27,64.2,38.7C56.5,50.4,46,60.3,33.8,66.5C21.6,72.7,7.7,75.2,-5.9,74.8C-19.5,74.4,-32.8,71.1,-43.8,63.7C-54.8,56.3,-63.5,44.8,-69.3,31.7C-75.1,18.6,-78,3.9,-75.7,-9.7C-73.4,-23.3,-65.9,-35.8,-55.7,-44.1C-45.5,-52.4,-32.6,-56.5,-20.1,-62C-7.6,-67.5,4.5,-74.4,16.8,-74.8C29.1,-75.2,25.6,-70.9,37.5,-64.9Z",
+    ],
+    scrollStart: "top bottom",
+    scrollEnd: "bottom top",
+  },
+];
+
+/**
+ * Large, organic blob shapes that morph between forms as the user scrolls.
+ * Placed as decorative background elements — they use mix-blend-mode to
+ * blend with the page gradient.
+ */
+export function MorphBlobs() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const blobs = container.querySelectorAll<SVGSVGElement>(".morph-blob");
+    const tweens: gsap.core.Tween[] = [];
+
+    blobs.forEach((blob, i) => {
+      const config = BLOBS[i];
+      if (!config) return;
+
+      // Morph through the path shapes on scroll
+      const paths = blob.querySelectorAll("path");
+      if (paths.length < 2) return;
+
+      // Set initial path
+      gsap.set(paths[0], { attr: { d: config.paths[0] } });
+
+      // Create a scrub timeline for path morphing
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: config.scrollStart,
+          end: config.scrollEnd,
+          scrub: 1.5,
+        },
+      });
+
+      for (let j = 1; j < config.paths.length; j++) {
+        tl.to(paths[0], {
+          attr: { d: config.paths[j] },
+          duration: 1,
+          ease: "power2.inOut",
+        });
+      }
+
+      // Add a slow rotation and scale pulse on scroll
+      const spinTween = gsap.to(blob, {
+        rotation: 360,
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 3,
+        },
+      });
+
+      const scaleTween = gsap.to(blob, {
+        scale: 1.15,
+        ease: "power1.inOut",
+        scrollTrigger: {
+          trigger: container,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 2,
+        },
+      });
+
+      tweens.push(spinTween, scaleTween);
+    });
+
+    return () => {
+      tweens.forEach((t) => {
+        t.scrollTrigger?.kill();
+        t.kill();
+      });
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden pointer-events-none z-0"
+      aria-hidden="true"
+    >
+      {BLOBS.map((blob, i) => (
+        <svg
+          key={i}
+          className="morph-blob absolute will-change-transform"
+          viewBox="-100 -100 200 200"
+          style={{
+            left: blob.x,
+            top: blob.y,
+            width: blob.size,
+            height: blob.size,
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <path
+            d={blob.paths[0]}
+            fill={blob.color}
+            style={{ filter: "blur(20px)" }}
+          />
+        </svg>
+      ))}
+    </div>
+  );
+}

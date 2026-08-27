@@ -17,6 +17,9 @@ import { useParallax } from "@/hooks/useParallax";
 import { FloatingShapes } from "@/components/ui/FloatingShapes";
 import { SERVICES } from "@/lib/constants";
 import { MouseGlow } from "@/components/ui/MouseGlow";
+import { MorphBlobs } from "@/components/ui/MorphBlobs";
+import { MultiLayerDivider } from "@/components/ui/SectionDivider";
+import { FloatingNav } from "@/components/ui/FloatingNav";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,6 +31,9 @@ export default function Home() {
   return (
     <div className="min-h-screen site-bg text-white font-sans relative overflow-hidden selection:bg-blue-500/30">
       <DevToolsProtection />
+
+      {/* Floating Nav — appears after scrolling past hero */}
+      <FloatingNav onBookClick={() => setIsModalOpen(true)} />
 
       {/* Fullscreen Hero */}
       <HeroSection onBookClick={() => setIsModalOpen(true)} />
@@ -48,6 +54,7 @@ export default function Home() {
         </div>
         <MouseGlow />
         <FloatingShapes />
+        <MorphBlobs />
 
         {/* Booking Modal */}
         <AnimatePresence>
@@ -94,9 +101,13 @@ export default function Home() {
 
         <div className="relative z-10">
           <ReviewsSection />
+          <MultiLayerDivider />
           <HorizontalScroll />
+          <MultiLayerDivider />
           <FeatureShowcase />
+          <MultiLayerDivider />
           <PinnedParallax />
+          <MultiLayerDivider />
           <ServicesSection onBookClick={() => setIsModalOpen(true)} />
           <Footer />
         </div>

@@ -10,8 +10,8 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * A dramatic pinned section where background and foreground text
  * layers move at different speeds creating a deep parallax effect.
- * The pinned/scrub animation runs on every device — transform-only
- * tweens stay GPU-composited on mobile.
+ * "CARE" and "PLUS" reveal with individual letter wipe animations
+ * — each letter slides in from the side inside an overflow-hidden clip.
  */
 export function PinnedParallax() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -38,28 +38,84 @@ export function PinnedParallax() {
       },
     });
 
-    tl.fromTo(
-      bgText,
-      { y: 100, opacity: 0.15, scale: 0.8 },
-      { y: -200, opacity: 0.08, scale: 1.1, ease: "none" },
-      0
-    );
+    // ── CARE: letter-by-letter wipe reveal from left ──
+    const careLetters = bgText.querySelectorAll<HTMLElement>(".care-letter");
+    if (careLetters.length) {
+      // Each letter starts translated right (hidden behind its clip)
+      gsap.set(careLetters, { xPercent: 100, opacity: 0 });
 
-    tl.fromTo(
-      midText,
-      { y: 200, opacity: 0.4 },
-      { y: -100, opacity: 0.2, ease: "none" },
-      0
-    );
+      // Stagger the wipe-in across the timeline
+      tl.to(
+        careLetters,
+        {
+          xPercent: 0,
+          opacity: 1,
+          duration: 0.15,
+          stagger: 0.04,
+          ease: "power3.out",
+        },
+        0.05
+      );
 
+      // Drift + fade out as scroll continues
+      tl.to(
+        bgText,
+        {
+          y: -200,
+          opacity: 0.08,
+          scale: 1.1,
+          rotation: 5,
+          filter: "blur(2px)",
+          ease: "none",
+        },
+        0.5
+      );
+    }
+
+    // ── PLUS: letter-by-letter wipe reveal from right ──
+    const plusLetters = midText.querySelectorAll<HTMLElement>(".plus-letter");
+    if (plusLetters.length) {
+      // Each letter starts translated left (hidden behind its clip)
+      gsap.set(plusLetters, { xPercent: -100, opacity: 0 });
+
+      // Stagger the wipe-in — starts a bit after CARE
+      tl.to(
+        plusLetters,
+        {
+          xPercent: 0,
+          opacity: 1,
+          duration: 0.15,
+          stagger: 0.04,
+          ease: "power3.out",
+        },
+        0.15
+      );
+
+      // Drift + fade out
+      tl.to(
+        midText,
+        {
+          y: -100,
+          opacity: 0.2,
+          scale: 0.95,
+          rotation: -3,
+          filter: "blur(1px)",
+          ease: "none",
+        },
+        0.55
+      );
+    }
+
+    // Foreground — morph in with scale + blur clearing
     tl.fromTo(
       fgText,
-      { y: 300, opacity: 0 },
-      { y: 0, opacity: 1, ease: "power2.out" },
+      { y: 300, opacity: 0, scale: 0.9, filter: "blur(8px)" },
+      { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", ease: "power2.out" },
       0.2
     );
 
-    tl.to(fgText, { opacity: 0, y: -50, ease: "power2.in" }, 0.7);
+    // Morph out — scale up + blur as it fades
+    tl.to(fgText, { opacity: 0, y: -50, scale: 1.05, filter: "blur(4px)", ease: "power2.in" }, 0.7);
 
     return () => {
       tl.scrollTrigger?.kill();
@@ -72,23 +128,31 @@ export function PinnedParallax() {
       ref={sectionRef}
       className="relative overflow-hidden flex items-center justify-center h-screen"
     >
-      {/* Deep background layer */}
+      {/* Deep background layer — CARE wipes in letter by letter */}
       <div
         ref={bgTextRef}
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
       >
         <span className="text-[10rem] sm:text-[20rem] font-black text-white/[0.04] leading-none tracking-tighter">
-          CARE
+          {"CARE".split("").map((char, i) => (
+            <span key={i} className="care-letter inline-block overflow-hidden">
+              <span className="inline-block">{char}</span>
+            </span>
+          ))}
         </span>
       </div>
 
-      {/* Mid layer */}
+      {/* Mid layer — PLUS wipes in letter by letter from opposite side */}
       <div
         ref={midTextRef}
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
       >
         <span className="text-[6rem] sm:text-[14rem] font-black text-white/[0.06] leading-none tracking-tighter">
-          PLUS
+          {"PLUS".split("").map((char, i) => (
+            <span key={i} className="plus-letter inline-block overflow-hidden">
+              <span className="inline-block">{char}</span>
+            </span>
+          ))}
         </span>
       </div>
 

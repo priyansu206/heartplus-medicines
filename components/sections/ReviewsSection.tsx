@@ -3,6 +3,7 @@
 import { Star } from "lucide-react";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
+import { useScrollMorph } from "@/hooks/useScrollMorph";
 import { TiltCard } from "@/components/ui/TiltCard";
 
 export interface Review {
@@ -62,6 +63,14 @@ export default function ReviewSection() {
     duration: 0.7,
   });
 
+  // Morph the rating badge on scroll — scale up + glow
+  const ratingMorphRef = useScrollMorph<HTMLDivElement>({
+    scale: [0.9, 1.05],
+    y: [20, 0],
+    start: "top 80%",
+    end: "center center",
+  });
+
   return (
     <section className="py-24 relative reviews-bg" id="reviews">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,7 +82,7 @@ export default function ReviewSection() {
           <h2 ref={headingRef} className="text-3xl sm:text-4xl font-bold text-white mt-6">
             What Our Patients Say
           </h2>
-          <div className="mt-6 inline-flex items-center gap-3 bg-white/[0.06] backdrop-blur-md px-5 py-3 rounded-full border border-white/[0.08]">
+          <div ref={ratingMorphRef} className="mt-6 inline-flex items-center gap-3 bg-white/[0.06] backdrop-blur-md px-5 py-3 rounded-full border border-white/[0.08]">
             <span className="text-2xl font-black text-white">5.0</span>
             <div className="flex text-amber-400">
               {[...Array(5)].map((_, i) => (
