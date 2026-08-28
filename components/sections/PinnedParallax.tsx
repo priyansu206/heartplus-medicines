@@ -4,15 +4,10 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
+import { useScrollMorph } from "@/hooks/useScrollMorph";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * A dramatic pinned section where background and foreground text
- * layers move at different speeds creating a deep parallax effect.
- * "CARE" and "PLUS" reveal with individual letter wipe animations
- * — each letter slides in from the side inside an overflow-hidden clip.
- */
 export function PinnedParallax() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const bgTextRef = useRef<HTMLDivElement>(null);
@@ -20,12 +15,26 @@ export function PinnedParallax() {
   const fgTextRef = useRef<HTMLDivElement>(null);
   const headingRef = useScrollTextReveal({ duration: 0.8, stagger: 0.08, delay: 0.15 });
 
+  const carePlusRef = useScrollMorph<HTMLDivElement>({
+    scale: [1.15, 1],
+    opacity: [0, 1],
+    y: [40, 0],
+    blur: [6, 0],
+    start: "center center",
+    end: "center 45%",
+    ease: "power2.out",
+  });
+
   useEffect(() => {
     const section = sectionRef.current;
     const bgText = bgTextRef.current;
     const midText = midTextRef.current;
     const fgText = fgTextRef.current;
     if (!section || !bgText || !midText || !fgText) return;
+
+    const isTouch =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -38,13 +47,10 @@ export function PinnedParallax() {
       },
     });
 
-    // ── CARE: letter-by-letter wipe reveal from left ──
     const careLetters = bgText.querySelectorAll<HTMLElement>(".care-letter");
     if (careLetters.length) {
-      // Each letter starts translated right (hidden behind its clip)
       gsap.set(careLetters, { xPercent: 100, opacity: 0 });
 
-      // Stagger the wipe-in across the timeline
       tl.to(
         careLetters,
         {
@@ -57,7 +63,6 @@ export function PinnedParallax() {
         0.05
       );
 
-      // Drift + fade out as scroll continues
       tl.to(
         bgText,
         {
@@ -65,20 +70,17 @@ export function PinnedParallax() {
           opacity: 0.08,
           scale: 1.1,
           rotation: 5,
-          filter: "blur(2px)",
+          ...(isTouch ? {} : { filter: "blur(2px)" }),
           ease: "none",
         },
         0.5
       );
     }
 
-    // ── PLUS: letter-by-letter wipe reveal from right ──
     const plusLetters = midText.querySelectorAll<HTMLElement>(".plus-letter");
     if (plusLetters.length) {
-      // Each letter starts translated left (hidden behind its clip)
       gsap.set(plusLetters, { xPercent: -100, opacity: 0 });
 
-      // Stagger the wipe-in — starts a bit after CARE
       tl.to(
         plusLetters,
         {
@@ -91,7 +93,6 @@ export function PinnedParallax() {
         0.15
       );
 
-      // Drift + fade out
       tl.to(
         midText,
         {
@@ -99,23 +100,21 @@ export function PinnedParallax() {
           opacity: 0.2,
           scale: 0.95,
           rotation: -3,
-          filter: "blur(1px)",
+          ...(isTouch ? {} : { filter: "blur(1px)" }),
           ease: "none",
         },
         0.55
       );
     }
 
-    // Foreground — morph in with scale + blur clearing
     tl.fromTo(
       fgText,
-      { y: 300, opacity: 0, scale: 0.9, filter: "blur(8px)" },
-      { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", ease: "power2.out" },
+      { y: 300, opacity: 0, scale: 0.9, ...(isTouch ? {} : { filter: "blur(8px)" }) },
+      { y: 0, opacity: 1, scale: 1, ...(isTouch ? {} : { filter: "blur(0px)" }), ease: "power2.out" },
       0.2
     );
 
-    // Morph out — scale up + blur as it fades
-    tl.to(fgText, { opacity: 0, y: -50, scale: 1.05, filter: "blur(4px)", ease: "power2.in" }, 0.7);
+    tl.to(fgText, { opacity: 0, y: -50, scale: 1.05, ...(isTouch ? {} : { filter: "blur(4px)" }), ease: "power2.in" }, 0.7);
 
     return () => {
       tl.scrollTrigger?.kill();
@@ -128,7 +127,7 @@ export function PinnedParallax() {
       ref={sectionRef}
       className="relative overflow-hidden flex items-center justify-center h-screen"
     >
-      {/* Deep background layer — CARE wipes in letter by letter */}
+      {/* Deep background layer — CARE */}
       <div
         ref={bgTextRef}
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
@@ -142,7 +141,7 @@ export function PinnedParallax() {
         </span>
       </div>
 
-      {/* Mid layer — PLUS wipes in letter by letter from opposite side */}
+      {/* Mid layer — PLUS */}
       <div
         ref={midTextRef}
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
@@ -156,7 +155,7 @@ export function PinnedParallax() {
         </span>
       </div>
 
-      {/* Foreground — main message */}
+      {/* Foreground */}
       <div className="relative z-10 text-center px-6 max-w-3xl">
         <h2 ref={headingRef} className="text-3xl sm:text-6xl md:text-7xl font-black text-white leading-tight">
           Trust Built Over{" "}
@@ -165,7 +164,13 @@ export function PinnedParallax() {
           </span>{" "}
           Patient Lives
         </h2>
-        <p className="mt-6 text-base sm:text-lg text-white/40 font-medium max-w-xl mx-auto">
+        <div
+          ref={carePlusRef}
+          className="mt-6 inline-block bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent text-xl sm:text-3xl font-black uppercase tracking-[0.3em]"
+        >
+          Care Plus
+        </div>
+        <p className="mt-4 text-base sm:text-lg text-white/40 font-medium max-w-xl mx-auto">
           Every heartbeat matters. Every patient matters. That&apos;s the Heart
           Plus promise.
         </p>

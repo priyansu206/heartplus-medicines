@@ -12,12 +12,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ICONS = [Pill, Stethoscope, Droplets, Microscope, Heart, Brain, Baby, Wind, TestTube];
 
-/**
- * A pinned horizontal scroll section — user scrolls vertically but
- * the content moves horizontally through the services.
- * The pinned scrub animation runs on every device — transform-only
- * tweens stay GPU-composited on mobile.
- */
 export function HorizontalScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -44,7 +38,6 @@ export function HorizontalScroll() {
       },
     });
 
-    // Morph cards as they scroll into the horizontal view
     const cards = track.querySelectorAll<HTMLElement>(".scroll-card");
     cards.forEach((card, i) => {
       gsap.fromTo(

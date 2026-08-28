@@ -26,10 +26,6 @@ const DEFAULT_PATHS = [
   "M0,240 C320,0 420,320 640,240 C860,0 960,320 1280,240 L1280,320 L0,320 Z",
 ];
 
-/**
- * An SVG wave divider between sections that morphs its shape
- * as the user scrolls past it.
- */
 export function SectionDivider({
   paths = DEFAULT_PATHS,
   fill = "rgba(6, 6, 15, 0.6)",
@@ -45,7 +41,6 @@ export function SectionDivider({
     const path = pathRef.current;
     if (!svg || !path || paths.length < 2) return;
 
-    // Set initial path
     gsap.set(path, { attr: { d: paths[0] } });
 
     const tl = gsap.timeline({
@@ -92,9 +87,6 @@ export function SectionDivider({
   );
 }
 
-/**
- * A more complex morphing divider with multiple layers at different speeds.
- */
 export function MultiLayerDivider() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -105,7 +97,6 @@ export function MultiLayerDivider() {
     const paths = container.querySelectorAll<SVGPathElement>("path");
     const cleanups: (() => void)[] = [];
 
-    // Layer 1 — slow, large wave
     const layer1Tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
@@ -132,7 +123,6 @@ export function MultiLayerDivider() {
     }
     cleanups.push(() => { layer1Tl.scrollTrigger?.kill(); layer1Tl.kill(); });
 
-    // Layer 2 — medium speed, offset wave
     const layer2Tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,

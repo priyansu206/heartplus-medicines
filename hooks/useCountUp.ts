@@ -19,10 +19,6 @@ interface CountUpOptions {
   start?: string;
 }
 
-/**
- * Animates a number counting up from 0 to target when element enters viewport.
- * The element's textContent will be replaced with the animated number.
- */
 export function useCountUp<T extends HTMLElement = HTMLSpanElement>(
   options: CountUpOptions
 ) {

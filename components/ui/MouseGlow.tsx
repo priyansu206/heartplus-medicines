@@ -2,11 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-/**
- * A subtle radial gradient that follows the pointer.
- * Uses Pointer Events so it works with both mouse and touch drags.
- * Writes are rAF-throttled to one style update per frame.
- */
 export function MouseGlow() {
   const ref = useRef<HTMLDivElement>(null);
 

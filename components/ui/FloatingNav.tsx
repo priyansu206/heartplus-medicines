@@ -24,10 +24,6 @@ interface FloatingNavProps {
   showAfter?: number;
 }
 
-/**
- * A floating glass-morphism navbar that appears after scrolling past the hero.
- * Morphs in from the top with a spring animation and out when scrolling back up.
- */
 export function FloatingNav({
   navItems = DEFAULT_ITEMS,
   onBookClick,
@@ -46,7 +42,6 @@ export function FloatingNav({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [showAfter]);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileOpen) {
       const original = document.body.style.overflow;

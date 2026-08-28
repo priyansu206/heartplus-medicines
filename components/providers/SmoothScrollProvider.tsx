@@ -23,10 +23,6 @@ export default function SmoothScrollProvider({
   useEffect(() => {
     const reducedMotion = isMobileDevice();
 
-    // Touch devices keep native momentum scrolling — it's smoother than any
-    // JS-driven smoothing and avoids a rAF loop on every scroll frame.
-    // ScrollTrigger still syncs on native scroll below.
-    // Reduced-motion users skip Lenis for the same reason.
     const coarsePointer =
       typeof window !== "undefined" &&
       window.matchMedia("(pointer: coarse)").matches;

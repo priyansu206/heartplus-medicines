@@ -24,12 +24,6 @@ const SHAPES: Shape[] = [
   { x: "60%", y: "40%", size: 20, type: "circle", color: "rgba(236,72,153,0.1)", duration: 4.5, delay: 0.3 },
 ];
 
-/**
- * Floating decorative shapes scattered across the page.
- * Each shape bobs up and down at a unique speed using GSAP.
- * Full set of shapes and animations runs on every device —
- * GSAP transform tweens stay on the compositor even on phones.
- */
 export function FloatingShapes() {
   const containerRef = useRef<HTMLDivElement>(null);
 

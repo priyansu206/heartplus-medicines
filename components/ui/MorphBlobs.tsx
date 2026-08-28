@@ -59,11 +59,6 @@ const BLOBS: Blob[] = [
   },
 ];
 
-/**
- * Large, organic blob shapes that morph between forms as the user scrolls.
- * Placed as decorative background elements — they use mix-blend-mode to
- * blend with the page gradient.
- */
 export function MorphBlobs() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -78,14 +73,11 @@ export function MorphBlobs() {
       const config = BLOBS[i];
       if (!config) return;
 
-      // Morph through the path shapes on scroll
       const paths = blob.querySelectorAll("path");
       if (paths.length < 2) return;
 
-      // Set initial path
       gsap.set(paths[0], { attr: { d: config.paths[0] } });
 
-      // Create a scrub timeline for path morphing
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
@@ -103,7 +95,6 @@ export function MorphBlobs() {
         });
       }
 
-      // Add a slow rotation and scale pulse on scroll
       const spinTween = gsap.to(blob, {
         rotation: 360,
         ease: "none",

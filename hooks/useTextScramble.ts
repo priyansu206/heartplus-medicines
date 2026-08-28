@@ -13,10 +13,6 @@ interface TextScrambleOptions {
   delay?: number;
 }
 
-/**
- * Text scramble effect — characters randomly cycle before settling.
- * Like the Matrix decode or prismatic text effect.
- */
 export function useTextScramble<T extends HTMLElement = HTMLDivElement>(
   options: TextScrambleOptions = {}
 ) {
@@ -47,7 +43,7 @@ export function useTextScramble<T extends HTMLElement = HTMLDivElement>(
       if (iteration <= text.length) {
         frameId = requestAnimationFrame(animate);
       } else {
-        el.textContent = text; // ensure final state is exact
+        el.textContent = text;
       }
     };
 

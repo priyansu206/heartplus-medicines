@@ -45,12 +45,10 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ onBookClick }: HeroSectionProps) {
-  // Text animation refs
   const subtitleRef = useTextScramble({ delay: 200, speed: 50 });
   const headingRef = useLineReveal({ delay: 0.3, stagger: 0.12 });
   const descRef = useTextReveal({ delay: 0.7, stagger: 0.02, duration: 0.6 });
 
-  // Parallax refs — run on every device (mouse and touch)
   const videoRef = useParallax<HTMLDivElement>({
     y: 120,
     start: "top top",
@@ -69,7 +67,6 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
 
   return (
     <div id="home" className="relative h-screen w-full overflow-hidden bg-black">
-      {/* Video Background — parallax: scrolls slower than page */}
       <div ref={videoRef} className="absolute inset-0 h-[120%] -top-[10%]">
         <video
           autoPlay
@@ -86,7 +83,6 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         </video>
       </div>
 
-      {/* Dark gradient overlay — parallax: slight offset */}
       <div
         ref={glowRef}
         className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"
@@ -95,7 +91,6 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
       {/* Navbar */}
       <Navbar onBookClick={onBookClick} />
 
-      {/* Hero Content — parallax: scrolls slightly faster for depth */}
       <div
         ref={contentRef}
         className="relative z-10 flex flex-col justify-between h-[calc(100vh-80px)] px-6 pb-10 pt-12 sm:pb-12 sm:pt-16 md:px-12 md:pb-16 md:pt-20 lg:px-16"
@@ -112,7 +107,6 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
             Our Priority.
           </h1>
 
-          {/* Stats row — animated counters */}
           <StatsRow />
 
           {/* Description */}

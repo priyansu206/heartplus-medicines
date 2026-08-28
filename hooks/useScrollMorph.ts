@@ -25,11 +25,6 @@ interface ScrollMorphOptions {
   ease?: string;
 }
 
-/**
- * Morph an element's transform properties smoothly as the user scrolls.
- * All values are interpolated between `start` and `end` scroll positions.
- * Transform-only writes keep the layer GPU-composited.
- */
 export function useScrollMorph<T extends HTMLElement = HTMLDivElement>(
   options: ScrollMorphOptions = {}
 ) {
@@ -73,13 +68,17 @@ export function useScrollMorph<T extends HTMLElement = HTMLDivElement>(
       fromVars.opacity = opacity[0];
       toVars.opacity = opacity[1];
     }
-    if (blur) {
-      fromVars.filter = `blur(${blur[0]}px)`;
-      toVars.filter = `blur(${blur[1]}px)`;
-    }
     if (rotate) {
       fromVars.rotation = rotate[0];
       toVars.rotation = rotate[1];
+    }
+
+    const isTouch =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    if (blur && !isTouch) {
+      fromVars.filter = `blur(${blur[0]}px)`;
+      toVars.filter = `blur(${blur[1]}px)`;
     }
 
     gsap.fromTo(el, fromVars, toVars);
@@ -103,10 +102,6 @@ interface ClipMorphOptions {
   end?: string;
 }
 
-/**
- * Morph an element's clip-path through a series of shapes as the user scrolls.
- * E.g. circle → polygon → inset.
- */
 export function useClipMorph<T extends HTMLElement = HTMLDivElement>(
   options: ClipMorphOptions
 ) {
@@ -129,10 +124,8 @@ export function useClipMorph<T extends HTMLElement = HTMLDivElement>(
       },
     });
 
-    // Set initial clip
     gsap.set(el, { clipPath: clips[0] });
 
-    // Create keyframes for each clip transition
     for (let i = 1; i < clips.length; i++) {
       tl.to(el, {
         clipPath: clips[i],

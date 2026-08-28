@@ -5,17 +5,12 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { useScrollMorph } from "@/hooks/useScrollMorph";
 
-/**
- * A visual showcase section with dramatic clip-path reveals
- * and scroll-triggered animations.
- */
 export function FeatureShowcase() {
   const orbRef = useClipReveal({ shape: "circle", duration: 1.5, ease: "power3.out" });
   const titleRef = useScrollTextReveal({ duration: 0.7, stagger: 0.05, delay: 0.1 });
   const subtitleRef = useScrollTextReveal({ duration: 0.5, stagger: 0.03, delay: 0.3 });
   const textRef = useScrollReveal({ y: 30, duration: 0.8, delay: 0.2 });
 
-  // Morph the orb as it scrolls into view — scale + rotate + blur
   const morphOrbRef = useScrollMorph<HTMLDivElement>({
     scale: [0.85, 1.05],
     rotate: [0, 15],
@@ -23,8 +18,6 @@ export function FeatureShowcase() {
     start: "top 90%",
     end: "center center",
   });
-
-  // Morph the text content container — subtle scale + translate
   const morphTextRef = useScrollMorph<HTMLDivElement>({
     y: [40, 0],
     scale: [0.96, 1],
@@ -35,7 +28,6 @@ export function FeatureShowcase() {
   return (
     <section className="py-32 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        {/* Left — Orb with clip reveal + scroll morph */}
         <div ref={morphOrbRef} className="relative flex items-center justify-center">
           <div
             ref={orbRef}
@@ -84,7 +76,6 @@ export function FeatureShowcase() {
           ))}
         </div>
 
-        {/* Right — Text content with scroll morph */}
         <div ref={morphTextRef} className="flex flex-col gap-6">
           <div>
             <span ref={subtitleRef} className="block text-violet-400 text-sm font-bold uppercase tracking-widest mb-3">
@@ -120,7 +111,6 @@ export function FeatureShowcase() {
         </div>
       </div>
 
-      {/* Float animation keyframe */}
       <style jsx>{`
         @keyframes float {
           from {

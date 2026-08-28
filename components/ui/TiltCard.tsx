@@ -12,11 +12,6 @@ interface TiltCardProps {
   glareOpacity?: number;
 }
 
-/**
- * A card that tilts in 3D toward the cursor with a glare effect.
- * Like Apple's product page cards.
- * Uses Pointer Events, so the tilt also responds to touch drags on mobile.
- */
 export function TiltCard({
   children,
   className = "",
@@ -31,7 +26,6 @@ export function TiltCard({
     const glare = glareRef.current;
     if (!card || !glare) return;
 
-    // Ignore multi-touch / scroll gestures
     if (e.pointerType !== "mouse" && e.isPrimary === false) return;
 
     const rect = card.getBoundingClientRect();

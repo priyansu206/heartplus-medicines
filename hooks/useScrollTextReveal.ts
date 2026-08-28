@@ -14,10 +14,6 @@ interface ScrollTextRevealOptions {
   start?: string;
 }
 
-/**
- * Word-by-word slide-up reveal triggered by scroll.
- * Each word is wrapped in a clip container so it slides up from below.
- */
 export function useScrollTextReveal<T extends HTMLElement = HTMLDivElement>(
   options: ScrollTextRevealOptions = {}
 ) {
@@ -72,10 +68,6 @@ export function useScrollTextReveal<T extends HTMLElement = HTMLDivElement>(
   return ref;
 }
 
-/**
- * Line-by-line slide-up reveal triggered by scroll.
- * Splits text by newlines — each line slides up independently.
- */
 export function useScrollLineReveal<T extends HTMLElement = HTMLHeadingElement>(
   options: ScrollTextRevealOptions = {}
 ) {

@@ -13,7 +13,6 @@ interface NavbarProps {
 export default function Navbar({ onBookClick }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Lock background scroll while the mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       const original = document.body.style.overflow;

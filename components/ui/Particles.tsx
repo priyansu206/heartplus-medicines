@@ -56,11 +56,9 @@ export const Particles: React.FC<ParticlesProps> = ({
   const canvasSize = useRef({ w: 0, h: 0 })
   const rafID = useRef<number | null>(null)
   const resizeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
-  // Cached canvas position — avoids a forced layout read on every mousemove
   const canvasRect = useRef({ left: 0, top: 0, width: 0, height: 0 })
   const prefersReducedMotion = useRef(false)
 
-  // Cap DPR at 2 — on high-DPI phones a 3x canvas paints 9x the pixels for no visible gain
   const dpr =
     typeof window !== "undefined"
       ? Math.min(window.devicePixelRatio || 1, 2)
@@ -176,7 +174,6 @@ export const Particles: React.FC<ParticlesProps> = ({
 
     window.addEventListener("resize", handleResize)
 
-    // Respect prefers-reduced-motion: draw the scene once, skip the animation loop
     if (prefersReducedMotion.current) {
       return () => {
         if (resizeTimeout.current) clearTimeout(resizeTimeout.current)

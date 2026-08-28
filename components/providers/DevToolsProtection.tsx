@@ -2,11 +2,6 @@
 
 import { useEffect } from "react";
 
-/**
- * Deters casual users from inspecting/modifying the page.
- * NOTE: This is NOT real security — a determined user can bypass
- * all client-side protections. Real security lives server-side.
- */
 export function DevToolsProtection() {
   useEffect(() => {
     // Block common dev tools keyboard shortcuts

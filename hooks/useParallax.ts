@@ -21,9 +21,6 @@ interface ParallaxOptions {
   disabled?: boolean;
 }
 
-/**
- * Parallax an element at a different rate than the page scroll.
- */
 export function useParallax<T extends HTMLElement = HTMLDivElement>(
   options: ParallaxOptions = {}
 ) {

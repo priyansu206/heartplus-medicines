@@ -21,9 +21,6 @@ interface ClipRevealOptions {
   start?: string;
 }
 
-/**
- * Reveals an element by animating clip-path from hidden to fully visible.
- */
 export function useClipReveal<T extends HTMLElement = HTMLDivElement>(
   options: ClipRevealOptions = {}
 ) {

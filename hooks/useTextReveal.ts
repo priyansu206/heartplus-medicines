@@ -14,10 +14,6 @@ interface TextRevealOptions {
   delay?: number;
 }
 
-/**
- * Animates text by splitting into words and revealing each one.
- * Triggers on mount — for scroll-triggered variants see useScrollTextReveal.
- */
 export function useTextReveal<T extends HTMLElement = HTMLDivElement>(
   options: TextRevealOptions = {}
 ) {
@@ -63,11 +59,6 @@ export function useTextReveal<T extends HTMLElement = HTMLDivElement>(
   return ref;
 }
 
-/**
- * Animates a heading by splitting into lines, then words.
- * Each line gets a clip-reveal effect.
- * Triggers on mount — for scroll-triggered variants see useScrollLineReveal.
- */
 export function useLineReveal<T extends HTMLElement = HTMLHeadingElement>(
   options: TextRevealOptions = {}
 ) {

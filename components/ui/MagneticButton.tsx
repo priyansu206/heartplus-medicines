@@ -11,11 +11,6 @@ interface MagneticButtonProps {
   strength?: number;
 }
 
-/**
- * A button that magnetically follows the cursor on hover.
- * Uses GSAP for buttery smooth spring animation.
- * Uses Pointer Events, so the pull also responds to touch drags on mobile.
- */
 export function MagneticButton({
   children,
   className = "",

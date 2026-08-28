@@ -6,10 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * A thin gradient bar at the top of the viewport that fills as you scroll.
- * Runs on every device — a single scaleX scrub is trivially cheap on mobile.
- */
 export function ScrollProgress() {
   const barRef = useRef<HTMLDivElement>(null);
 

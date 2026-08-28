@@ -24,7 +24,6 @@ import { FloatingNav } from "@/components/ui/FloatingNav";
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Parallax for decorative layers — runs on every device
   const particlesRef = useParallax<HTMLDivElement>({ y: -50 });
   const dotPatternRef = useParallax<HTMLDivElement>({ y: -30 });
 

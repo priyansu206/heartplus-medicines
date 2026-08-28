@@ -18,9 +18,6 @@ interface ScrollRevealOptions {
   disabled?: boolean;
 }
 
-/**
- * Reveal a single element when it enters the viewport.
- */
 export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
   options: ScrollRevealOptions = {}
 ) {
@@ -70,9 +67,6 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
   return ref;
 }
 
-/**
- * Staggered reveal for a list of child elements inside a parent.
- */
 export function useStaggerReveal<T extends HTMLElement = HTMLDivElement>(
   childSelector: string,
   options: ScrollRevealOptions = {}
