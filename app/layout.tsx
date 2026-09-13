@@ -54,6 +54,12 @@ export default function RootLayout({
       className={`dark ${geistSans.variable} h-full antialiased overflow-x-clip`}
     >
       <body className="min-h-full flex flex-col overflow-x-clip">
+        <link
+          rel="preconnect"
+          href="https://d8j0ntlcm91z4.cloudfront.net"
+          crossOrigin="anonymous"
+        />
+        <link rel="dns-prefetch" href="https://d8j0ntlcm91z4.cloudfront.net" />
         <SmoothScrollProvider>
         <ScrollProgress />
         <MagneticCursor />

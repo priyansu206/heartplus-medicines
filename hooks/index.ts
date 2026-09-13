@@ -1,4 +1,5 @@
 // Animation hooks
+export { useIsMobile, useLowPower } from "./useIsMobile";
 export { useParallax } from "./useParallax";
 export { useCountUp } from "./useCountUp";
 export { useTextScramble } from "./useTextScramble";

@@ -79,10 +79,64 @@
   }
 }
 
+@keyframes float-shape {
+  from {
+    transform: translate(var(--fx1, 0px), var(--fy1, 0px))
+      rotate(var(--fr1, 0deg)) scale(var(--fs1, 1));
+  }
+  to {
+    transform: translate(var(--fx2, 0px), var(--fy2, -16px))
+      rotate(var(--fr2, 0deg)) scale(var(--fs2, 1.1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-shape,
+  .site-bg-anim {
+    animation: none !important;
+  }
+}
+
 /* Solid fallback so nothing flashes white while fonts/layers load */
 html {
   background: #06060f;
   scroll-behavior: auto !important; /* Lenis handles smooth scroll */
+}
+
+@media (max-width: 767px) {
+  .backdrop-blur-none,
+  .backdrop-blur-sm,
+  .backdrop-blur,
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .bg-white\/\[0\.04\] {
+    background-color: rgba(13, 15, 27, 0.94);
+  }
+  .bg-white\/\[0\.06\] {
+    background-color: rgba(15, 17, 31, 0.95);
+  }
+  .bg-white\/\[0\.08\] {
+    background-color: rgba(18, 20, 36, 0.96);
+  }
+  .bg-white\/\[0\.1\] {
+    background-color: rgba(20, 22, 40, 0.97);
+  }
+
+  .bg-black\/60 {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .floating-shape,
+  .morph-blob {
+    will-change: auto;
+  }
 }
 
 /* Lenis smooth scroll */
@@ -107,18 +161,10 @@ html.lenis, body.lenis {
   overflow: hidden;
 }
 
-/* Dark-section marker. The animated gradient lives on a fixed GPU-composited
-   layer (.site-bg-anim) behind the page, so sections stay transparent here. */
 .site-bg {
   background: transparent;
 }
 
-/* Animated page background.
-   Animating transform (not background-position) keeps this on the GPU —
-   the layer is 3x the viewport so it never reveals its edges while drifting.
-   On mobile we shrink the layer (-25% inset = 1.5x viewport) and slow the
-   animation — still fully covers the ±6% drift while using ~6x less GPU
-   memory than the desktop layer. */
 .site-bg-anim {
   position: fixed;
   inset: -100%;

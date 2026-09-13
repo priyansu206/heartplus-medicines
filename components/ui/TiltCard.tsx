@@ -26,7 +26,7 @@ export function TiltCard({
     const glare = glareRef.current;
     if (!card || !glare) return;
 
-    if (e.pointerType !== "mouse" && e.isPrimary === false) return;
+    if (e.pointerType !== "mouse") return;
 
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;

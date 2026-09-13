@@ -4,8 +4,10 @@ import { useClipReveal } from "@/hooks/useClipReveal";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { useScrollMorph } from "@/hooks/useScrollMorph";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export function FeatureShowcase() {
+  const isMobile = useIsMobile();
   const orbRef = useClipReveal({ shape: "circle", duration: 1.5, ease: "power3.out" });
   const titleRef = useScrollTextReveal({ duration: 0.7, stagger: 0.05, delay: 0.1 });
   const subtitleRef = useScrollTextReveal({ duration: 0.5, stagger: 0.03, delay: 0.3 });
@@ -62,18 +64,19 @@ export function FeatureShowcase() {
           </div>
 
           {/* Floating dots around the orb */}
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 rounded-full bg-violet-400/40"
-              style={{
-                top: `${20 + Math.sin(i * 1.05) * 35}%`,
-                left: `${50 + Math.cos(i * 1.05) * 40}%`,
-                animation: `float ${3 + i * 0.5}s ease-in-out infinite alternate`,
-                animationDelay: `${i * 0.3}s`,
-              }}
-            />
-          ))}
+          {!isMobile &&
+            [...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 rounded-full bg-violet-400/40"
+                style={{
+                  top: `${20 + Math.sin(i * 1.05) * 35}%`,
+                  left: `${50 + Math.cos(i * 1.05) * 40}%`,
+                  animation: `float ${3 + i * 0.5}s ease-in-out infinite alternate`,
+                  animationDelay: `${i * 0.3}s`,
+                }}
+              />
+            ))}
         </div>
 
         <div ref={morphTextRef} className="flex flex-col gap-6">

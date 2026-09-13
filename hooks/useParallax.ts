@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,7 +40,7 @@ export function useParallax<T extends HTMLElement = HTMLDivElement>(
       disabled = false,
     } = options;
 
-    if (disabled) return; // skip ScrollTrigger on mobile
+    if (disabled || isMobileDevice()) return; // skip ScrollTrigger on mobile
 
     const fromVars: gsap.TweenVars = {};
     const toVars: gsap.TweenVars = {

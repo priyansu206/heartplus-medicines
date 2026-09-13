@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, type ComponentPropsWithoutRef } from "react"
 
 import { cn } from "@/lib/utils"
+import { isMobileDevice } from "@/lib/isMobile"
 
 interface ParticlesProps extends ComponentPropsWithoutRef<"div"> {
   className?: string
@@ -67,6 +68,8 @@ export const Particles: React.FC<ParticlesProps> = ({
   const rgbaPrefix = useMemo(() => `rgba(${rgb.join(", ")}, `, [rgb])
 
   const run = useCallback(() => {
+    if (isMobileDevice()) return;
+
     const canvas = canvasRef.current
     const container = canvasContainerRef.current
     if (!canvas || !container) return
@@ -121,6 +124,10 @@ export const Particles: React.FC<ParticlesProps> = ({
     }
 
     const animate = () => {
+      if (document.hidden) {
+        rafID.current = null
+        return
+      }
       clearContext()
       circles.current.forEach((circle: Circle, i: number) => {
         const closestEdge = Math.min(
@@ -158,6 +165,12 @@ export const Particles: React.FC<ParticlesProps> = ({
       resizeTimeout.current = setTimeout(initCanvas, 200)
     }
 
+    const handleVisibility = () => {
+      if (!document.hidden && rafID.current === null) {
+        animate()
+      }
+    }
+
     const handlePointerMove = (event: PointerEvent) => {
       rawMouse.current.x = event.clientX
       rawMouse.current.y = event.clientY
@@ -173,21 +186,26 @@ export const Particles: React.FC<ParticlesProps> = ({
     initCanvas()
 
     window.addEventListener("resize", handleResize)
+    window.addEventListener("visibilitychange", handleVisibility)
 
     if (prefersReducedMotion.current) {
       return () => {
         if (resizeTimeout.current) clearTimeout(resizeTimeout.current)
         window.removeEventListener("resize", handleResize)
+        window.removeEventListener("visibilitychange", handleVisibility)
       }
     }
 
-    window.addEventListener("pointermove", handlePointerMove, { passive: true })
+    if (window.matchMedia("(pointer: fine)").matches) {
+      window.addEventListener("pointermove", handlePointerMove, { passive: true })
+    }
     animate()
 
     return () => {
       if (rafID.current != null) window.cancelAnimationFrame(rafID.current)
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current)
       window.removeEventListener("resize", handleResize)
+      window.removeEventListener("visibilitychange", handleVisibility)
       window.removeEventListener("pointermove", handlePointerMove)
     }
   }, [quantity, staticity, ease, size, vx, vy, dpr, rgbaPrefix])

@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +34,8 @@ export function useScrollMorph<T extends HTMLElement = HTMLDivElement>(
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    if (isMobileDevice()) return;
 
     const {
       y,
@@ -110,6 +113,8 @@ export function useClipMorph<T extends HTMLElement = HTMLDivElement>(
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    if (isMobileDevice()) return;
 
     const { clips, start = "top bottom", end = "bottom top" } = options;
 

@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { useScrollMorph } from "@/hooks/useScrollMorph";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +15,7 @@ export function PinnedParallax() {
   const midTextRef = useRef<HTMLDivElement>(null);
   const fgTextRef = useRef<HTMLDivElement>(null);
   const headingRef = useScrollTextReveal({ duration: 0.8, stagger: 0.08, delay: 0.15 });
+  const isMobile = useIsMobile();
 
   const carePlusRef = useScrollMorph<HTMLDivElement>({
     scale: [1.15, 1],
@@ -26,6 +28,8 @@ export function PinnedParallax() {
   });
 
   useEffect(() => {
+    if (isMobile) return;
+
     const section = sectionRef.current;
     const bgText = bgTextRef.current;
     const midText = midTextRef.current;
@@ -120,7 +124,30 @@ export function PinnedParallax() {
       tl.scrollTrigger?.kill();
       tl.kill();
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) {
+    return (
+      <section className="relative overflow-hidden py-28 flex items-center justify-center">
+        <div className="relative z-10 text-center px-6 max-w-3xl">
+          <h2 ref={headingRef} className="text-4xl font-black text-white leading-tight">
+            Trust Built Over{" "}
+            <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
+              3,000+
+            </span>{" "}
+            Patient Lives
+          </h2>
+          <div className="mt-6 inline-block bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent text-xl font-black uppercase tracking-[0.3em]">
+            Care Plus
+          </div>
+          <p className="mt-4 text-base text-white/40 font-medium max-w-xl mx-auto">
+            Every heartbeat matters. Every patient matters. That&apos;s the Heart
+            Plus promise.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

@@ -52,8 +52,6 @@ export const googleReviews: Review[] = [
   },
 ];
 
-// Bento layout — the longest review features across 2 columns / 2 rows,
-// the rest fill the remaining cells in a 3-column grid.
 const SPANS = [
   "md:col-span-2 md:row-span-2",
   "md:col-span-1",

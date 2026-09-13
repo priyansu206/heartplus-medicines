@@ -8,9 +8,6 @@ import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Mobile browsers fire resize when the address bar hides/shows — without
-// this, every such resize triggers a ScrollTrigger.refresh() and pinned
-// sections visibly jump mid-scroll.
 ScrollTrigger.config({ ignoreMobileResize: true });
 
 export default function SmoothScrollProvider({
@@ -35,7 +32,7 @@ export default function SmoothScrollProvider({
     }
 
     const lenis = new Lenis({
-      duration: 1.0,
+      duration: 0.85,
       easing: (t) => {
         return 1 - Math.pow(1 - t, 4);
       },

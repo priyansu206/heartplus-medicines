@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobileDevice } from "@/lib/isMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,6 +41,8 @@ export function SectionDivider({
     const svg = svgRef.current;
     const path = pathRef.current;
     if (!svg || !path || paths.length < 2) return;
+
+    if (isMobileDevice()) return;
 
     gsap.set(path, { attr: { d: paths[0] } });
 
@@ -93,6 +96,8 @@ export function MultiLayerDivider() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    if (isMobileDevice()) return;
 
     const paths = container.querySelectorAll<SVGPathElement>("path");
     const cleanups: (() => void)[] = [];

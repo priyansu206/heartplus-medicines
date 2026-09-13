@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { SERVICES } from "@/lib/constants";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { Stethoscope, Brain, Heart, Baby, Droplets, Wind, Microscope, Pill, TestTube } from "lucide-react";
@@ -16,8 +17,11 @@ export function HorizontalScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const headerRef = useScrollTextReveal({ duration: 0.6, stagger: 0.05 });
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile) return;
+
     const container = containerRef.current;
     const track = trackRef.current;
     if (!container || !track) return;
@@ -69,7 +73,42 @@ export function HorizontalScroll() {
         });
       });
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) {
+    return (
+      <section className="relative overflow-hidden py-20">
+        <div className="text-center px-6 mb-12">
+          <span ref={headerRef} className="inline-block bg-white/[0.06] text-violet-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
+            Scroll to Explore
+          </span>
+          <h2 className="text-3xl font-bold text-white mt-6">
+            Our Specialties
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-6 max-w-3xl mx-auto">
+          {SERVICES.map((service, i) => {
+            const Icon = ICONS[i] || Pill;
+            return (
+              <div
+                key={service.id}
+                className="rounded-3xl bg-white/[0.04] border border-white/[0.08] p-6 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center border border-white/[0.08]">
+                  <Icon className="w-6 h-6 text-violet-300" />
+                </div>
+                <h3 className="text-lg font-bold text-white">{service.name}</h3>
+                <p className="text-white/50 text-sm leading-relaxed">
+                  {service.desc}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

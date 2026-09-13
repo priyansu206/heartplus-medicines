@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { isMobileDevice } from "@/lib/isMobile";
 
 const CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -21,6 +22,8 @@ export function useTextScramble<T extends HTMLElement = HTMLDivElement>(
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    if (isMobileDevice()) return;
 
     const { speed = 40, maxIterations = 12, delay = 0 } = options;
     const text = el.textContent || "";

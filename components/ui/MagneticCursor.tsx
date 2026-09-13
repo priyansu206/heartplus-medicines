@@ -2,12 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export function MagneticCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile) return;
     const fine = window.matchMedia("(pointer: fine)").matches;
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -106,7 +109,9 @@ export function MagneticCursor() {
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseout", onOut);
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <>

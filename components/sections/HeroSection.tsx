@@ -4,6 +4,7 @@ import { useParallax } from "@/hooks/useParallax";
 import { useTextReveal, useLineReveal } from "@/hooks/useTextReveal";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { useCountUp } from "@/hooks/useCountUp";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import Navbar from "@/components/layout/Navbar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { ArrowRight, Phone } from "lucide-react"
@@ -45,34 +46,43 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ onBookClick }: HeroSectionProps) {
-  const subtitleRef = useTextScramble({ delay: 200, speed: 50 });
-  const headingRef = useLineReveal({ delay: 0.3, stagger: 0.12 });
-  const descRef = useTextReveal({ delay: 0.7, stagger: 0.02, duration: 0.6 });
+  const isMobile = useIsMobile();
+  const subtitleRef = useTextScramble({ delay: 120, speed: 50 });
+  const headingRef = useLineReveal({ delay: 0.15, stagger: 0.12 });
+  const descRef = useTextReveal({ delay: 0.4, stagger: 0.02, duration: 0.6 });
 
   const videoRef = useParallax<HTMLDivElement>({
     y: 120,
     start: "top top",
     end: "bottom top",
+    disabled: isMobile,
   });
   const contentRef = useParallax<HTMLDivElement>({
     y: -60,
     start: "top top",
     end: "bottom top",
+    disabled: isMobile,
   });
   const glowRef = useParallax<HTMLDivElement>({
     y: 40,
     start: "top top",
     end: "bottom top",
+    disabled: isMobile,
   });
 
   return (
     <div id="home" className="relative h-screen w-full overflow-hidden bg-black">
-      <div ref={videoRef} className="absolute inset-0 h-[120%] -top-[10%]">
+      <div
+        ref={videoRef}
+        className="absolute inset-0 h-full md:h-[120%] md:-top-[10%] md:will-change-transform"
+      >
         <video
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
+          disablePictureInPicture
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: "70% center" }}
         >
@@ -117,7 +127,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
 
         {/* Bottom */}
         <div>
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4 animate-[fadeSlideUp_0.8s_ease_0.9s_both]">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 animate-[fadeSlideUp_0.7s_ease_0.7s_both]">
             <MagneticButton
               onClick={onBookClick}
               className="rounded-lg bg-white px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-medium text-black hover:scale-105 transition-transform transform-gpu inline-flex items-center gap-2"

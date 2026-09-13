@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,7 +22,7 @@ const BLOBS: Blob[] = [
   {
     x: "10%",
     y: "20%",
-    size: 400,
+    size: 360,
     color: "rgba(99, 102, 241, 0.12)",
     paths: [
       "M44.5,-76.3C56.2,-69.1,63.2,-54.5,69.5,-40C75.8,-25.5,81.4,-11.1,80.4,2.7C79.4,16.5,71.8,29.7,63.1,41.5C54.4,53.3,44.6,63.7,32.6,70.5C20.6,77.3,6.4,80.5,-7.6,79.5C-21.6,78.5,-35.4,73.3,-47.1,65.3C-58.8,57.3,-68.4,46.5,-73.8,33.5C-79.2,20.5,-80.4,5.3,-78.2,-9.1C-76,-23.5,-70.4,-37.1,-61.2,-47.3C-52,-57.5,-39.2,-64.3,-26.3,-70.7C-13.4,-77.1,0.5,-83.1,14.1,-81.4C27.7,-79.7,32.8,-83.5,44.5,-76.3Z",
@@ -34,7 +35,7 @@ const BLOBS: Blob[] = [
   {
     x: "75%",
     y: "40%",
-    size: 350,
+    size: 320,
     color: "rgba(168, 85, 247, 0.10)",
     paths: [
       "M41.4,-70.2C54.9,-63.6,68,-54.8,74.6,-42.4C81.2,-30,81.3,-14,78.5,0.8C75.7,15.6,70,29.2,62.1,40.8C54.2,52.4,44.1,62,32.1,68.4C20.1,74.8,6.2,78,-8.1,77.4C-22.4,76.8,-37.1,72.4,-48.5,64C-59.9,55.6,-68,43.2,-72.8,29.2C-77.6,15.2,-79.1,-0.4,-76.3,-14.6C-73.5,-28.8,-66.4,-41.6,-56,-50.4C-45.6,-59.2,-31.9,-64,-18.5,-68.5C-5.1,-73,8.8,-77.2,22.1,-76.7C35.4,-76.2,48.1,-71,41.4,-70.2Z",
@@ -47,7 +48,7 @@ const BLOBS: Blob[] = [
   {
     x: "40%",
     y: "70%",
-    size: 300,
+    size: 280,
     color: "rgba(59, 130, 246, 0.08)",
     paths: [
       "M45.8,-78.2C58.8,-71.2,68.5,-57.6,74.8,-43C81.1,-28.4,84,-12.8,82.3,2.2C80.6,17.2,74.3,31.6,65.5,43C56.7,54.4,45.4,62.8,32.8,68.8C20.2,74.8,6.3,78.4,-7.6,78.3C-21.5,78.2,-35.4,74.4,-47.1,66.8C-58.8,59.2,-68.3,47.8,-73.7,34.4C-79.1,21,-80.4,5.6,-78.2,-9.4C-76,-24.4,-70.3,-39,-60.6,-49.1C-50.9,-59.2,-37.2,-64.8,-23.6,-70.6C-10,-76.4,3.5,-82.4,17.2,-82.4C30.9,-82.4,32.8,-85.2,45.8,-78.2Z",
@@ -61,13 +62,20 @@ const BLOBS: Blob[] = [
 
 export function MorphBlobs() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    if (isMobile) return;
 
     const blobs = container.querySelectorAll<SVGSVGElement>(".morph-blob");
-    const tweens: gsap.core.Tween[] = [];
+    const handle = { paused: false };
+    const tweens: Array<gsap.core.Tween | gsap.core.Timeline> = [];
+
+    const isTouch =
+      typeof window !== "undefined" &&
+      window.matchMedia("(pointer: coarse)").matches;
 
     blobs.forEach((blob, i) => {
       const config = BLOBS[i];
@@ -95,6 +103,10 @@ export function MorphBlobs() {
         });
       }
 
+      tweens.push(tl);
+
+      if (isTouch) return;
+
       const spinTween = gsap.to(blob, {
         rotation: 360,
         ease: "none",
@@ -120,13 +132,24 @@ export function MorphBlobs() {
       tweens.push(spinTween, scaleTween);
     });
 
+    const onVisibility = () => {
+      handle.paused = document.hidden;
+      tweens.forEach((t) =>
+        handle.paused ? t.pause() : t.play()
+      );
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
       tweens.forEach((t) => {
         t.scrollTrigger?.kill();
         t.kill();
       });
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <div
@@ -150,7 +173,7 @@ export function MorphBlobs() {
           <path
             d={blob.paths[0]}
             fill={blob.color}
-            style={{ filter: "blur(20px)" }}
+            style={{ filter: "blur(12px)" }}
           />
         </svg>
       ))}

@@ -20,6 +20,8 @@ export function MagneticButton({
   const ref = useRef<HTMLButtonElement>(null);
 
   const handlePointerMove = (e: React.PointerEvent) => {
+    if (e.pointerType === "touch") return;
+
     const el = ref.current;
     if (!el) return;
 

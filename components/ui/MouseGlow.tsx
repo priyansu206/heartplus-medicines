@@ -6,6 +6,12 @@ export function MouseGlow() {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const fine = window.matchMedia("(pointer: fine)").matches;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (!fine || reducedMotion) return;
+
     let animationFrameId: number | null = null;
     let lastEvent: PointerEvent | null = null;
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "motion/react";
 import HeroSection from "@/components/sections/HeroSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
@@ -9,7 +10,6 @@ import { HorizontalScroll } from "@/components/sections/HorizontalScroll";
 import { FeatureShowcase } from "@/components/sections/FeatureShowcase";
 import { PinnedParallax } from "@/components/sections/PinnedParallax";
 import Footer from "@/components/layout/Footer";
-import { BookingForm } from "@/components/forms/BookingForm";
 import { DevToolsProtection } from "@/components/providers/DevToolsProtection";
 import { DotPattern } from "@/components/ui/DotPattern";
 import { Particles } from "@/components/ui/Particles";
@@ -20,6 +20,19 @@ import { MouseGlow } from "@/components/ui/MouseGlow";
 import { MorphBlobs } from "@/components/ui/MorphBlobs";
 import { MultiLayerDivider } from "@/components/ui/SectionDivider";
 import { FloatingNav } from "@/components/ui/FloatingNav";
+
+const BookingForm = dynamic(
+  () =>
+    import("@/components/forms/BookingForm").then((m) => m.BookingForm),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-12 text-white/50 font-medium text-sm">
+        Loading form...
+      </div>
+    ),
+  }
+);
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,7 +55,7 @@ export default function Home() {
         <div ref={particlesRef} className="absolute inset-0 z-0">
           <Particles
             className="absolute inset-0 opacity-40"
-            quantity={50}
+            quantity={28}
             ease={70}
             color="#3b82f6"
             refresh
