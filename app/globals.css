@@ -286,4 +286,20 @@ html.lenis, body.lenis {
     @apply font-sans;
     background-color: #06060f !important;
   }
+
+  /* Consistent typographic spacing throughout the site */
+  p,
+  li {
+    line-height: 1.7;
+    letter-spacing: 0.013em;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
 }

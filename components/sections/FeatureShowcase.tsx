@@ -5,8 +5,33 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { useScrollMorph } from "@/hooks/useScrollMorph";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { GradientText } from "@/components/ui/GradientText";
+import { CONTACT } from "@/lib/constants";
+import { CalendarCheck, Clock, Mail, MapPin, Navigation, Phone } from "lucide-react";
 
-export function FeatureShowcase() {
+const features = [
+  {
+    emoji: "\u{1F3E5}",
+    label: "Advanced Diagnostics",
+    desc: "Modern lab with fast, accurate reports.",
+  },
+  {
+    emoji: "\u{1FA7A}",
+    label: "Expert Specialists",
+    desc: "9+ departments, one trusted team.",
+  },
+  {
+    emoji: "\u{1F48E}",
+    label: "Premium Pharmacy",
+    desc: "Every prescription under one roof.",
+  },
+];
+
+export function FeatureShowcase({
+  onBookClick,
+}: {
+  onBookClick?: () => void;
+}) {
   const isMobile = useIsMobile();
   const orbRef = useClipReveal({ shape: "circle", duration: 1.5, ease: "power3.out" });
   const titleRef = useScrollTextReveal({ duration: 0.7, stagger: 0.05, delay: 0.1 });
@@ -84,7 +109,7 @@ export function FeatureShowcase() {
             <span ref={subtitleRef} className="block text-violet-400 text-sm font-bold uppercase tracking-widest mb-3">
               Why Heart Plus
             </span>
-            <h2 ref={titleRef} className="text-3xl sm:text-4xl font-bold text-white leading-tight">
+            <h2 ref={titleRef} className="text-3xl sm:text-4xl font-bold text-white leading-tight tracking-tight">
               Healthcare That{" "}
               <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
                 Actually Cares
@@ -97,19 +122,142 @@ export function FeatureShowcase() {
             with genuine compassion — because your health deserves both.
           </p>
           <div className="flex flex-wrap gap-4 mt-2">
-            {[
-              { emoji: "\u{1F3E5}", label: "Advanced Diagnostics" },
-              { emoji: "\u{1FA7A}", label: "Expert Specialists" },
-              { emoji: "\u{1F48E}", label: "Premium Pharmacy" },
-            ].map((item) => (
+            {features.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm font-medium text-white/70"
+                className="flex flex-col gap-1 px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-sm font-medium text-white/70 group hover:border-blue-400/30 hover:bg-white/[0.07] transition-all duration-300"
               >
-                <span>{item.emoji}</span>
-                {item.label}
+                <span className="flex items-center gap-2">
+                  <span>{item.emoji}</span>
+                  {item.label}
+                </span>
+                <span className="text-xs text-white/40 leading-relaxed">{item.desc}</span>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Visit us / get in touch */}
+      <div className="mt-32 max-w-6xl mx-auto px-6">
+        <div className="mb-10 text-center">
+          <GradientText
+            colors={["#60a5fa", "#a78bfa", "#f472b6"]}
+            animationSpeed={7}
+            className="mx-auto"
+          >
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              Your Wellness Centre Awaits
+            </h3>
+          </GradientText>
+          <p className="mt-3 text-sm text-white/40 font-medium">
+            Visit us, call us, or book a consultation — we&apos;re here every
+            day.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Visit Us */}
+          <div className="relative overflow-hidden rounded-3xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] p-8 flex flex-col gap-6 shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-300 hover:border-blue-400/20 hover:bg-white/[0.06]">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/50 to-transparent" />
+            <div className="flex items-center gap-4">
+              <span className="flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-400/20 text-blue-300">
+                <MapPin className="w-6 h-6" />
+              </span>
+              <div>
+                <h4 className="text-lg font-bold text-white tracking-tight">
+                  Visit Us
+                </h4>
+                <p className="text-sm text-white/50">{CONTACT.address}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-400/20 text-emerald-300">
+                <Clock className="w-6 h-6" />
+              </span>
+              <div>
+                <h4 className="text-sm font-bold text-white">Walk-Ins Welcome</h4>
+                <p className="text-sm text-white/50">
+                  Specialists available every day.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                `${CONTACT.address}, Cuttack`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-white font-bold rounded-xl text-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Navigation className="w-4 h-4" />
+              Get Directions
+            </a>
+          </div>
+
+          {/* Get in touch */}
+          <div className="relative overflow-hidden rounded-3xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] p-8 flex flex-col gap-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-300 hover:border-violet-400/20 hover:bg-white/[0.06]">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/50 to-transparent" />
+            <h4 className="text-lg font-bold text-white tracking-tight">
+              Get in Touch
+            </h4>
+
+            <a
+              href={`tel:${CONTACT.phone.clinic}`}
+              className="flex items-center gap-3 rounded-xl px-4 py-3 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition-all duration-200 group"
+            >
+              <Phone className="w-5 h-5 text-blue-300" />
+              <div>
+                <p className="text-xs text-white/40 font-bold uppercase tracking-wider">
+                  Clinic
+                </p>
+                <p className="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">
+                  {CONTACT.phone.clinic}
+                </p>
+              </div>
+            </a>
+
+            <a
+              href={`tel:${CONTACT.phone.personal}`}
+              className="flex items-center gap-3 rounded-xl px-4 py-3 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition-all duration-200 group"
+            >
+              <Phone className="w-5 h-5 text-violet-300" />
+              <div>
+                <p className="text-xs text-white/40 font-bold uppercase tracking-wider">
+                  Personal
+                </p>
+                <p className="text-sm font-bold text-white group-hover:text-violet-300 transition-colors">
+                  {CONTACT.phone.personal}
+                </p>
+              </div>
+            </a>
+
+            <a
+              href={`mailto:${CONTACT.email}`}
+              className="flex items-center gap-3 rounded-xl px-4 py-3 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition-all duration-200 group"
+            >
+              <Mail className="w-5 h-5 text-pink-300" />
+              <div>
+                <p className="text-xs text-white/40 font-bold uppercase tracking-wider">
+                  Email
+                </p>
+                <p className="text-sm font-bold text-white group-hover:text-pink-300 transition-colors break-all">
+                  {CONTACT.email}
+                </p>
+              </div>
+            </a>
+
+            {onBookClick && (
+              <button
+                onClick={onBookClick}
+                className="mt-auto w-full px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(37,99,235,0.4)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.5)] hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 transform-gpu inline-flex items-center justify-center gap-2 text-sm tracking-wide"
+              >
+                <CalendarCheck className="w-4 h-4" />
+                Book an Appointment
+              </button>
+            )}
           </div>
         </div>
       </div>

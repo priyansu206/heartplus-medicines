@@ -1,9 +1,11 @@
 "use client";
 
-import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
+import { useStaggerReveal } from "@/hooks/useScrollReveal";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { SERVICES } from "@/lib/constants";
 import { TiltCard } from "@/components/ui/TiltCard";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { GlowBorder } from "@/components/ui/GlowBorder";
 
 interface ServicesSectionProps {
   onBookClick: () => void;
@@ -18,51 +20,73 @@ function ServiceCard({
 }) {
   const isGeneral = service.id === 1;
 
-  return (
-    <TiltCard className="service-card" maxTilt={8}>
-    <div className="group flex flex-col p-6 rounded-3xl relative overflow-hidden bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_48px_rgba(59,130,246,0.12)] hover:bg-white/[0.07] hover:border-blue-400/20 transition-all duration-300 transform-gpu">
-      {/* Hover glow */}
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/[0.06] group-hover:to-purple-500/[0.04] transition-all duration-500 pointer-events-none" />
+  const cardContent = (
+    <TiltCard className="group/card" maxTilt={8}>
+      <div className="group flex flex-col p-6 rounded-3xl relative overflow-hidden bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_48px_rgba(59,130,246,0.12)] hover:bg-white/[0.07] hover:border-blue-400/20 transition-all duration-300 transform-gpu">
+        {/* Hover glow */}
+        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/0 to-blue-500/0 group-hover:from-blue-500/[0.06] group-hover:to-purple-500/[0.04] transition-all duration-500 pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col flex-1">
-        {/* Name + badge */}
-        <div className="mb-3">
-          <div className="flex items-center flex-wrap gap-2 mb-1">
-            <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
-              {service.name}
-            </h3>
-            {isGeneral && (
-              <span className="bg-emerald-500/15 backdrop-blur-sm text-emerald-400 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-emerald-500/20 animate-pulse">
-                Save 20%
+        <div className="relative z-10 flex flex-col flex-1">
+          {/* Name + badge */}
+          <div className="mb-3">
+            <div className="flex items-center flex-wrap gap-2 mb-1">
+              <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors duration-300 tracking-tight">
+                {service.name}
+              </h3>
+              {isGeneral && (
+                <span className="bg-emerald-500/15 backdrop-blur-sm text-emerald-400 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-emerald-500/20 animate-pulse">
+                  Save 20%
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="text-white/50 font-medium leading-relaxed text-sm flex-1 mb-5">
+            {service.desc}
+          </p>
+
+          {/* Book button */}
+          {!isGeneral ? (
+            <button
+              onClick={onBookClick}
+              className="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-500 backdrop-blur-md text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(37,99,235,0.4)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.5)] hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 transform-gpu flex items-center justify-center gap-2 group/btn text-sm tracking-wide"
+            >
+              Book Now
+              <span className="inline-block transition-transform duration-200 group-hover/btn:translate-x-1">
+                &rarr;
               </span>
-            )}
-          </div>
+            </button>
+          ) : (
+            <div className="w-full px-5 py-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold rounded-xl text-center text-sm">
+              Included in General Checkup
+            </div>
+          )}
         </div>
-
-        {/* Description */}
-        <p className="text-white/50 font-medium leading-relaxed text-sm flex-1 mb-5">
-          {service.desc}
-        </p>
-
-        {/* Book button */}
-        {!isGeneral ? (
-          <button
-            onClick={onBookClick}
-            className="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-500 backdrop-blur-md text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(37,99,235,0.4)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.5)] hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 transform-gpu flex items-center justify-center gap-2 group/btn text-sm"
-          >
-            Book Now
-            <span className="inline-block transition-transform duration-200 group-hover/btn:translate-x-1">
-              &rarr;
-            </span>
-          </button>
-        ) : (
-          <div className="w-full px-5 py-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold rounded-xl text-center text-sm">
-            Included in General Checkup
-          </div>
-        )}
       </div>
-    </div>
     </TiltCard>
+  );
+
+  if (isGeneral) {
+    return (
+      <div className="service-card">
+        <GlowBorder
+          colors={["#3b82f6", "#8b5cf6", "#ec4899", "#3b82f6"]}
+          animationDuration={6}
+        >
+          {cardContent}
+        </GlowBorder>
+      </div>
+    );
+  }
+
+  return (
+    <SpotlightCard
+      className="service-card rounded-3xl"
+      spotColor="rgba(96, 165, 250, 0.16)"
+    >
+      {cardContent}
+    </SpotlightCard>
   );
 }
 

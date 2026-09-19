@@ -87,7 +87,7 @@ export function FloatingNav({
               <button
                 key={item.name}
                 onClick={() => scrollTo(item.link)}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/[0.08] transition-all duration-200 group"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/[0.08] transition-all duration-200 group tracking-wide"
               >
                 <span className="text-white/40 group-hover:text-white/70 transition-colors">
                   {item.icon}
@@ -103,7 +103,7 @@ export function FloatingNav({
             {onBookClick && (
               <button
                 onClick={onBookClick}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-black text-sm font-semibold hover:scale-105 transition-transform"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-black text-sm font-semibold hover:scale-105 transition-transform tracking-wide"
               >
                 Book
               </button>
@@ -170,7 +170,7 @@ export function FloatingNav({
                   <button
                     key={item.name}
                     onClick={() => scrollTo(item.link)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200 tracking-wide"
                   >
                     <span className="text-white/40">{item.icon}</span>
                     <span>{item.name}</span>
@@ -184,7 +184,7 @@ export function FloatingNav({
                         setMobileOpen(false);
                         onBookClick();
                       }}
-                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-black text-sm font-semibold hover:scale-[1.02] transition-transform"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-black text-sm font-semibold hover:scale-[1.02] transition-transform tracking-wide"
                     >
                       Book Appointment
                     </button>

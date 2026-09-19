@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="flex flex-col items-center md:items-start">
           <Link
             href="/"
-            className="text-2xl text-white font-extrabold mb-2 hover:text-blue-300 transition-colors"
+            className="text-2xl text-white font-extrabold mb-2 hover:text-blue-300 transition-colors tracking-tight"
           >
             Heart Plus
           </Link>

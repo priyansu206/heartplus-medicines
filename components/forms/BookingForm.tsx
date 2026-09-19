@@ -1,19 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Service } from "@/lib/constants";
+import { CheckCircle2, Loader2 } from "lucide-react";
 
 interface BookingFormProps {
   services: readonly Service[];
   onSuccess: () => void;
 }
 
+const inputBase =
+  "w-full rounded-xl bg-white/[0.04] border px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 transition-all";
+
 export function BookingForm({ services, onSuccess }: BookingFormProps) {
   const [formData, setFormData] = useState({ name: "", phone: "", service: "" });
   const [isSending, setIsSending] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; phone?: string; submit?: string }>({});
   const [success, setSuccess] = useState(false);
+
+  const autoCloseRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (autoCloseRef.current) clearTimeout(autoCloseRef.current);
+    };
+  }, []);
 
   const validate = () => {
     const newErrors: typeof errors = {};
@@ -48,10 +60,7 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
       setSuccess(true);
       setFormData({ name: "", phone: "", service: "" });
 
-      setTimeout(() => {
-        onSuccess();
-        setSuccess(false);
-      }, 2000);
+      autoCloseRef.current = setTimeout(() => onSuccess(), 2200);
     } catch (error) {
       setErrors({ submit: (error as Error).message || "Something went wrong. Please try again." });
     } finally {
@@ -64,17 +73,28 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
       <div
         role="status"
         aria-live="polite"
-        className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-center font-bold"
+        className="flex flex-col items-center justify-center gap-4 py-8 text-center"
       >
-        Request Sent Successfully! We will contact you soon.
+        <div className="relative">
+          <div className="absolute inset-0 rounded-full bg-emerald-500/30 blur-xl" />
+          <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-500/10">
+            <CheckCircle2 size={30} className="text-emerald-400" />
+          </div>
+        </div>
+        <div>
+          <p className="text-lg font-bold text-white">Request Sent Successfully</p>
+          <p className="mt-1 text-sm text-white/50">
+            Our team will contact you shortly to confirm your appointment.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
       <div>
-        <label className="text-xs font-bold text-white/60 uppercase tracking-wider mb-1 block">
+        <label className="mb-1.5 block text-[11px] font-bold text-white/50 uppercase tracking-wider">
           Full Name
         </label>
         <input
@@ -83,50 +103,55 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           aria-invalid={!!errors.name}
-          className={`w-full bg-white/[0.06] border rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 transition-all ${
+          className={`${inputBase} ${
             errors.name
-              ? "border-red-500/60 focus:ring-red-500/50 focus:border-red-500/60"
-              : "border-white/[0.1] focus:ring-blue-500/50 focus:border-blue-500/30"
+              ? "border-red-500/60 focus:ring-red-500/40 focus:border-red-500/60"
+              : "border-white/[0.08] hover:border-white/[0.16] focus:ring-blue-500/40 focus:border-blue-500/40"
           }`}
           placeholder="John Doe"
         />
-        {errors.name && <p className="text-red-400 text-xs font-bold mt-1">{errors.name}</p>}
+        {errors.name && <p className="mt-1 text-xs font-medium text-red-400">{errors.name}</p>}
       </div>
 
       <div>
-        <label className="text-xs font-bold text-white/60 uppercase tracking-wider mb-1 block">
+        <label className="mb-1.5 block text-[11px] font-bold text-white/50 uppercase tracking-wider">
           Phone Number
         </label>
         <input
           required
           type="tel"
           value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, "") })}
           aria-invalid={!!errors.phone}
-          className={`w-full bg-white/[0.06] border rounded-xl px-4 py-3 text-sm font-medium text-white placeholder:text-white/30 focus:outline-none focus:ring-2 transition-all ${
+          className={`${inputBase} ${
             errors.phone
-              ? "border-red-500/60 focus:ring-red-500/50 focus:border-red-500/60"
-              : "border-white/[0.1] focus:ring-blue-500/50 focus:border-blue-500/30"
+              ? "border-red-500/60 focus:ring-red-500/40 focus:border-red-500/60"
+              : "border-white/[0.08] hover:border-white/[0.16] focus:ring-blue-500/40 focus:border-blue-500/40"
           }`}
           placeholder="9876543210"
           maxLength={10}
+          inputMode="numeric"
         />
-        {errors.phone && <p className="text-red-400 text-xs font-bold mt-1">{errors.phone}</p>}
+        {errors.phone && <p className="mt-1 text-xs font-medium text-red-400">{errors.phone}</p>}
       </div>
 
       <div>
-        <label className="text-xs font-bold text-white/60 uppercase tracking-wider mb-1 block">
+        <label className="mb-1.5 block text-[11px] font-bold text-white/50 uppercase tracking-wider">
           Service Needed
         </label>
         <select
           required
           value={formData.service}
           onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-          className="w-full bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all"
+          className={`${inputBase} border-white/[0.08] hover:border-white/[0.16] focus:ring-blue-500/40 focus:border-blue-500/40 appearance-none ${
+            formData.service ? "text-white" : "text-white/30"
+          }`}
         >
-          <option value="" className="bg-slate-900">Select a service...</option>
+          <option value="" className="bg-[#0b0d1a] text-white/50">
+            Select a service...
+          </option>
           {services.map((s) => (
-            <option key={s.id} value={s.name} className="bg-slate-900">
+            <option key={s.id} value={s.name} className="bg-[#0b0d1a] text-white">
               {s.name}
             </option>
           ))}
@@ -134,15 +159,22 @@ export function BookingForm({ services, onSuccess }: BookingFormProps) {
       </div>
 
       {errors.submit && (
-        <p className="text-red-400 text-xs font-bold text-center">{errors.submit}</p>
+        <p className="text-center text-xs font-medium text-red-400">{errors.submit}</p>
       )}
 
       <button
         type="submit"
         disabled={isSending}
-        className="mt-4 w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/50 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98] flex justify-center items-center"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/25 transition-all hover:from-blue-500 hover:to-violet-500 disabled:opacity-60 active:scale-[0.99] tracking-wide"
       >
-        {isSending ? "Sending..." : "Submit Request"}
+        {isSending ? (
+          <>
+            <Loader2 size={16} className="animate-spin" />
+            Sending...
+          </>
+        ) : (
+          "Submit Request"
+        )}
       </button>
     </form>
   );

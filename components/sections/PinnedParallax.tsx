@@ -130,7 +130,7 @@ export function PinnedParallax() {
     return (
       <section className="relative overflow-hidden py-28 flex items-center justify-center">
         <div className="relative z-10 text-center px-6 max-w-3xl">
-          <h2 ref={headingRef} className="text-4xl font-black text-white leading-tight">
+          <h2 ref={headingRef} className="text-4xl font-black text-white leading-tight tracking-tight">
             Trust Built Over{" "}
             <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
               3,000+
@@ -140,7 +140,7 @@ export function PinnedParallax() {
           <div className="mt-6 inline-block bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent text-xl font-black uppercase tracking-[0.3em]">
             Care Plus
           </div>
-          <p className="mt-4 text-base text-white/40 font-medium max-w-xl mx-auto">
+          <p className="mt-5 text-base text-white/40 font-medium max-w-xl mx-auto leading-relaxed">
             Every heartbeat matters. Every patient matters. That&apos;s the Heart
             Plus promise.
           </p>
@@ -152,39 +152,50 @@ export function PinnedParallax() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden flex items-center justify-center h-screen"
+      className="relative overflow-hidden flex flex-col items-center justify-center h-screen"
     >
-      {/* Deep background layer — CARE */}
-      <div
-        ref={bgTextRef}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
-      >
-        <span className="text-[10rem] sm:text-[20rem] font-black text-white/[0.04] leading-none tracking-tighter">
-          {"CARE".split("").map((char, i) => (
-            <span key={i} className="care-letter inline-block overflow-hidden">
-              <span className="inline-block">{char}</span>
-            </span>
-          ))}
-        </span>
-      </div>
+      {/* Stacked background layers — CARE above PLUS, no overlap */}
+      <div className="flex flex-col items-center gap-4 sm:gap-8 pointer-events-none select-none">
+        {/* Deep background layer — CARE */}
+        <div ref={bgTextRef} className="flex justify-center">
+          <span
+            className="text-[8rem] sm:text-[16rem] font-black leading-none tracking-tighter text-transparent"
+            style={{
+              background: "linear-gradient(135deg, rgba(96,165,250,0.5), rgba(139,92,246,0.4), rgba(236,72,153,0.35))",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+            }}
+          >
+            {"CARE".split("").map((char, i) => (
+              <span key={i} className="care-letter inline-block overflow-hidden">
+                <span className="inline-block">{char}</span>
+              </span>
+            ))}
+          </span>
+        </div>
 
-      {/* Mid layer — PLUS */}
-      <div
-        ref={midTextRef}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
-      >
-        <span className="text-[6rem] sm:text-[14rem] font-black text-white/[0.06] leading-none tracking-tighter">
-          {"PLUS".split("").map((char, i) => (
-            <span key={i} className="plus-letter inline-block overflow-hidden">
-              <span className="inline-block">{char}</span>
-            </span>
-          ))}
-        </span>
+        {/* Mid layer — PLUS */}
+        <div ref={midTextRef} className="flex justify-center">
+          <span
+            className="text-[5rem] sm:text-[12rem] font-black leading-none tracking-tighter text-transparent"
+            style={{
+              background: "linear-gradient(135deg, rgba(59,130,246,0.6), rgba(168,85,247,0.5), rgba(244,114,182,0.45))",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+            }}
+          >
+            {"PLUS".split("").map((char, i) => (
+              <span key={i} className="plus-letter inline-block overflow-hidden">
+                <span className="inline-block">{char}</span>
+              </span>
+            ))}
+          </span>
+        </div>
       </div>
 
       {/* Foreground */}
-      <div className="relative z-10 text-center px-6 max-w-3xl">
-        <h2 ref={headingRef} className="text-3xl sm:text-6xl md:text-7xl font-black text-white leading-tight">
+      <div className="relative z-10 mt-10 text-center px-6 max-w-3xl">
+        <h2 ref={headingRef} className="text-3xl sm:text-6xl md:text-7xl font-black text-white leading-tight tracking-tight">
           Trust Built Over{" "}
           <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-purple-400 bg-clip-text text-transparent">
             3,000+
@@ -197,7 +208,7 @@ export function PinnedParallax() {
         >
           Care Plus
         </div>
-        <p className="mt-4 text-base sm:text-lg text-white/40 font-medium max-w-xl mx-auto">
+        <p className="mt-5 text-base sm:text-lg text-white/40 font-medium max-w-xl mx-auto leading-relaxed">
           Every heartbeat matters. Every patient matters. That&apos;s the Heart
           Plus promise.
         </p>

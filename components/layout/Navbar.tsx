@@ -57,7 +57,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
             <button
               key={item}
               onClick={() => scrollTo(item)}
-              className="text-sm text-white/80 hover:text-white transition-colors"
+              className="text-sm text-white/80 hover:text-white transition-colors tracking-wide"
             >
               {item}
             </button>
@@ -66,7 +66,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
 
         <button
           onClick={onBookClick}
-          className="hidden md:block rounded-lg bg-white px-5 py-2 text-sm font-medium text-black hover:scale-105 transition-transform transform-gpu"
+          className="hidden md:block rounded-lg bg-white px-5 py-2 text-sm font-medium text-black hover:scale-105 transition-transform transform-gpu tracking-wide"
         >
           Book Now
         </button>
@@ -112,7 +112,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
             <button
               key={item}
               onClick={() => scrollTo(item)}
-              className="py-4 text-3xl font-medium text-white/90 hover:text-white text-left"
+              className="py-4 text-3xl font-medium text-white/90 hover:text-white text-left tracking-tight"
             >
               {item}
             </button>
@@ -122,7 +122,7 @@ export default function Navbar({ onBookClick }: NavbarProps) {
               setMobileMenuOpen(false);
               onBookClick();
             }}
-            className="mt-6 rounded-full bg-white px-8 py-3.5 text-base font-medium text-black hover:scale-105 transition-transform transform-gpu max-w-max"
+            className="mt-6 rounded-full bg-white px-8 py-3.5 text-base font-medium text-black hover:scale-105 transition-transform transform-gpu max-w-max tracking-wide"
           >
             Book Appointment
           </button>

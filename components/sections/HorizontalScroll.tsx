@@ -82,7 +82,7 @@ export function HorizontalScroll() {
           <span ref={headerRef} className="inline-block bg-white/[0.06] text-violet-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
             Scroll to Explore
           </span>
-          <h2 className="text-3xl font-bold text-white mt-6">
+          <h2 className="text-3xl font-bold text-white mt-6 leading-tight tracking-tight">
             Our Specialties
           </h2>
         </div>
@@ -98,7 +98,7 @@ export function HorizontalScroll() {
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center border border-white/[0.08]">
                   <Icon className="w-6 h-6 text-violet-300" />
                 </div>
-                <h3 className="text-lg font-bold text-white">{service.name}</h3>
+                <h3 className="text-lg font-bold text-white tracking-tight">{service.name}</h3>
                 <p className="text-white/50 text-sm leading-relaxed">
                   {service.desc}
                 </p>
@@ -120,7 +120,7 @@ export function HorizontalScroll() {
         <span ref={headerRef} className="inline-block bg-white/[0.06] backdrop-blur-md text-violet-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
           Scroll to Explore
         </span>
-        <h2 className="text-3xl sm:text-4xl font-bold text-white mt-6">
+        <h2 className="text-3xl sm:text-4xl font-bold text-white mt-6 leading-tight tracking-tight">
           Our Specialties
         </h2>
       </div>
@@ -139,7 +139,7 @@ export function HorizontalScroll() {
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center border border-white/[0.08]">
                   <Icon className="w-7 h-7 text-violet-300" />
                 </div>
-                <h3 className="text-xl font-bold text-white">{service.name}</h3>
+                <h3 className="text-xl font-bold text-white tracking-tight">{service.name}</h3>
                 <p className="text-white/50 text-sm leading-relaxed flex-1">
                   {service.desc}
                 </p>

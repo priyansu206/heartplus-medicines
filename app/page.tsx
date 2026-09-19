@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
-import { AnimatePresence, motion } from "motion/react";
 import HeroSection from "@/components/sections/HeroSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import ServicesSection from "@/components/sections/ServicesSection";
@@ -20,19 +18,7 @@ import { MouseGlow } from "@/components/ui/MouseGlow";
 import { MorphBlobs } from "@/components/ui/MorphBlobs";
 import { MultiLayerDivider } from "@/components/ui/SectionDivider";
 import { FloatingNav } from "@/components/ui/FloatingNav";
-
-const BookingForm = dynamic(
-  () =>
-    import("@/components/forms/BookingForm").then((m) => m.BookingForm),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center py-12 text-white/50 font-medium text-sm">
-        Loading form...
-      </div>
-    ),
-  }
-);
+import { BookingModal } from "@/components/ui/BookingModal";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,54 +55,18 @@ export default function Home() {
         <MorphBlobs />
 
         {/* Booking Modal */}
-        <AnimatePresence>
-          {isModalOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.94, opacity: 0, y: 24 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.94, opacity: 0, y: 24 }}
-                transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 w-full max-w-lg shadow-2xl border border-white/10 relative transform-gpu"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/60 font-bold transition-colors"
-                >
-                  &#10005;
-                </button>
-
-                <h3 className="text-2xl font-black text-white mb-2">
-                  Request an Appointment
-                </h3>
-                <p className="text-white/50 font-medium mb-6 text-sm">
-                  Fill out your details below and our team will get back to you
-                  shortly.
-                </p>
-
-                <BookingForm
-                  services={SERVICES}
-                  onSuccess={() => setIsModalOpen(false)}
-                />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <BookingModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          services={SERVICES}
+        />
 
         <div className="relative z-10">
           <ReviewsSection />
           <MultiLayerDivider />
           <HorizontalScroll />
           <MultiLayerDivider />
-          <FeatureShowcase />
+          <FeatureShowcase onBookClick={() => setIsModalOpen(true)} />
           <MultiLayerDivider />
           <PinnedParallax />
           <MultiLayerDivider />

@@ -1,13 +1,14 @@
 "use client";
 
 import { useParallax } from "@/hooks/useParallax";
-import { useTextReveal, useLineReveal } from "@/hooks/useTextReveal";
-import { useTextScramble } from "@/hooks/useTextScramble";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import Navbar from "@/components/layout/Navbar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
-import { ArrowRight, Phone } from "lucide-react"
+import { BlurText } from "@/components/ui/BlurText";
+import { GradientText } from "@/components/ui/GradientText";
+import { Orb } from "@/components/ui/Orb";
+import { ArrowRight, Phone } from "lucide-react";
 
 function StatCounter({
   target,
@@ -20,7 +21,7 @@ function StatCounter({
 }) {
   const ref = useCountUp({ target, suffix, duration: 2 });
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-1.5">
       <span ref={ref} className="text-2xl sm:text-3xl font-bold text-white">
         0{suffix}
       </span>
@@ -47,9 +48,6 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onBookClick }: HeroSectionProps) {
   const isMobile = useIsMobile();
-  const subtitleRef = useTextScramble({ delay: 120, speed: 50 });
-  const headingRef = useLineReveal({ delay: 0.15, stagger: 0.12 });
-  const descRef = useTextReveal({ delay: 0.4, stagger: 0.02, duration: 0.6 });
 
   const videoRef = useParallax<HTMLDivElement>({
     y: 120,
@@ -63,10 +61,10 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
     end: "bottom top",
     disabled: isMobile,
   });
-  const glowRef = useParallax<HTMLDivElement>({
-    y: 40,
-    start: "top top",
-    end: "bottom top",
+  const descRef = useParallax<HTMLParagraphElement>({
+    y: 20,
+    start: "top bottom",
+    end: "bottom 60%",
     disabled: isMobile,
   });
 
@@ -93,10 +91,20 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         </video>
       </div>
 
-      <div
-        ref={glowRef}
-        className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"
-      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
+
+      {/* Ambient orb glow above the video */}
+      <div className="absolute inset-0 z-[1] pointer-events-none mix-blend-screen">
+        <div className="absolute -right-1/4 top-1/4 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px]">
+          <Orb hue={210} hue2={340} className="opacity-70" />
+        </div>
+        <div className="absolute -left-1/4 bottom-1/4 w-[50vw] h-[50vw] max-w-[600px] max-h-[600px]">
+          <Orb hue={195} hue2={260} className="opacity-60" />
+        </div>
+        <div className="absolute right-1/3 -top-1/4 w-[40vw] h-[40vw] max-w-[500px] max-h-[500px]">
+          <Orb hue={285} hue2={190} className="opacity-50" />
+        </div>
+      </div>
 
       {/* Navbar */}
       <Navbar onBookClick={onBookClick} />
@@ -107,21 +115,42 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
       >
         {/* Top */}
         <div className="max-w-3xl">
-          <div className="mb-3 sm:mb-4">
-            <span ref={subtitleRef} className="text-xs sm:text-sm text-white/90 font-medium tracking-wide">
-              Durgapur&apos;s Trusted Polyclinic
-            </span>
+          <div className="mb-4 flex items-center gap-3">
+            <GradientText
+              colors={["#60a5fa", "#a78bfa", "#f472b6"]}
+              animationSpeed={6}
+              showBorder
+            >
+              <span className="inline-block text-xs sm:text-sm font-bold uppercase tracking-widest text-white/95">
+                Durgapur&apos;s Trusted Polyclinic
+              </span>
+            </GradientText>
           </div>
-          <h1 ref={headingRef} className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight text-white">
-            Your Health,
-            Our Priority.
+
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold leading-[1.05] tracking-tight text-white">
+            <BlurText
+              text="Your Health,"
+              animateBy="words"
+              delay={0.08}
+              className="block"
+            />
+            <BlurText
+              text="Our Priority."
+              animateBy="words"
+              delay={0.06}
+              className="block"
+            />
           </h1>
 
           <StatsRow />
 
           {/* Description */}
-          <p ref={descRef} className="text-sm sm:text-base md:text-lg leading-relaxed text-white/60 max-w-sm sm:max-w-lg mt-5 sm:mt-6">
-            Expert doctors, advanced diagnostics, and compassionate care — all under one roof at Durgapur Chowk, Jobra.
+          <p
+            ref={descRef}
+            className="text-sm sm:text-base md:text-lg leading-relaxed text-white/60 max-w-sm sm:max-w-lg mt-6 sm:mt-8"
+          >
+            Expert doctors, advanced diagnostics, and compassionate care — all
+            under one roof at Durgapur Chowk, Jobra.
           </p>
         </div>
 
@@ -130,7 +159,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 animate-[fadeSlideUp_0.7s_ease_0.7s_both]">
             <MagneticButton
               onClick={onBookClick}
-              className="rounded-lg bg-white px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-medium text-black hover:scale-105 transition-transform transform-gpu inline-flex items-center gap-2"
+              className="rounded-lg bg-white px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-medium text-black hover:scale-105 transition-transform transform-gpu inline-flex items-center gap-2 tracking-wide"
             >
               Book Appointment
               <ArrowRight size={16} />

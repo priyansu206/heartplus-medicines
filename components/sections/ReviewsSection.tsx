@@ -6,6 +6,7 @@ import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 import { useScrollTextReveal } from "@/hooks/useScrollTextReveal";
 import { useScrollMorph } from "@/hooks/useScrollMorph";
 import { TiltCard } from "@/components/ui/TiltCard";
+import { GradientText } from "@/components/ui/GradientText";
 
 const GOOGLE_MAPS_REVIEWS_URL =
   "https://www.google.com/maps/place/Heartplus+medicines/@20.4772522,85.9000926,17z/data=!3m1!4b1!4m6!3m5!1s0x3a19130fb5d454cb:0x541a3b5e1a4eeb12!8m2!3d20.4772522!4d85.9026675!16s%2Fg%2F11xsxzhzsq?entry=ttu&g_ep=EgoyMDI2MDgyNS4wIKXMDSoASAFQAw%3D%3D";
@@ -85,16 +86,21 @@ export default function ReviewSection() {
           <span className="bg-white/[0.06] backdrop-blur-md text-rose-300 border border-white/[0.08] px-6 py-3 rounded-full text-sm font-black uppercase tracking-widest shadow-md">
             Patient Feedback
           </span>
-          <h2 ref={headingRef} className="text-3xl sm:text-4xl font-bold text-white mt-6">
+          <h2 ref={headingRef} className="text-3xl sm:text-4xl font-bold text-white mt-6 leading-tight tracking-tight">
             What Our Patients Say
           </h2>
-          <div ref={ratingMorphRef} className="mt-6 inline-flex items-center gap-3 bg-white/[0.06] backdrop-blur-md px-5 py-3 rounded-full border border-white/[0.08]">
-            <span className="text-2xl font-black text-white">5.0</span>
-            <div className="flex text-amber-400">
+          <div ref={ratingMorphRef} className="mt-6 inline-flex items-center gap-3 bg-white/[0.06] backdrop-blur-md px-6 py-3 rounded-full border border-white/[0.08]">
+            <GradientText
+              colors={["#fbbf24", "#60a5fa", "#f472b6", "#fbbf24"]}
+              animationSpeed={6}
+            >
+              <span className="text-2xl font-black">5.0</span>
+            </GradientText>
+            <span className="flex text-amber-400">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-5 h-5 fill-current" />
               ))}
-            </div>
+            </span>
             <span className="text-sm font-medium text-white/50">
               (22+ Google Reviews)
             </span>
